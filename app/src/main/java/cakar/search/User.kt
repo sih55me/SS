@@ -3,13 +3,13 @@ package cakar.search
 import android.os.Parcel
 import android.os.Parcelable
 
-data class Project(
+data class User(
     val id: Int,
     val title: String,
-    val desc: String,
-    val instructions: String,
-    val creator: String,
-    val thumb: String
+    val bio: String,
+    val status: String,
+    val thumb: String,
+    val from: String
 ): Parcelable{
 
     constructor(p:Parcel) : this(
@@ -32,21 +32,21 @@ data class Project(
     override fun writeToParcel(p0: Parcel, p1: Int) {
         p0.writeInt(id)
         p0.writeString(title)
-        p0.writeString(desc)
-        p0.writeString(instructions)
-        p0.writeString(creator)
+        p0.writeString(bio)
+        p0.writeString(status)
         p0.writeString(thumb)
+        p0.writeString(from)
         p0.writeMap(uninfo)
     }
 
 
-    companion object CREATOR: Parcelable.Creator<Project>{
-        override fun createFromParcel(p0: Parcel?): Project? {
+    companion object CREATOR: Parcelable.Creator<User>{
+        override fun createFromParcel(p0: Parcel?): User? {
             if(p0 ==null)return null
-            return Project(p0)
+            return User(p0)
         }
 
-        override fun newArray(p0: Int): Array<out Project?> {
+        override fun newArray(p0: Int): Array<out User?> {
             return arrayOfNulls(p0)
         }
 
@@ -54,16 +54,8 @@ data class Project(
 
     /**
      * 1. created
-     * 2. modified
-     * 3. shared
-     * 4. views
-     * 5. loves
-     * 6. fav
-     * 7. remix
-     * 8. is author from scratch team?
-     * 8. Root remix (project remix -> project)
-     * 9. Parent remix (project remix1 -> project remix -> project)
+     * 2. is author from scratch team?
      */
-    val uninfo = mutableMapOf<String, Any>()
+    val uninfo = mutableMapOf<String,String>()
 
 }

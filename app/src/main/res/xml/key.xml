@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:horizontalGap="5dp"
+    android:verticalGap="5dp"
+    android:keyHeight="50dp"
+    android:keyWidth="40dp">
+
+    <Row>
+        <!-- Define Up Arrow Key -->
+        <Key android:codes="21" android:keyLabel="▲" android:keyEdgeFlags="left"/>
+        <!-- Define Left Arrow Key -->
+        <Key android:codes="22" android:keyLabel="◀"/>
+        <!-- Define Right Arrow Key -->
+        <Key android:codes="19" android:keyLabel="▶"/>
+        <!-- Define Down Arrow Key -->
+        <Key android:codes="20" android:keyLabel="▼" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="62" android:keyLabel="Space"/>
+    </Row>
+
+
+
+</Keyboard>

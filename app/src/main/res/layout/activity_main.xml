@@ -1,16 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:theme="@style/Theme.MaterialComponents.Light"
+    android:orientation="vertical"
     tools:context=".MainActivity">
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:id="@+id/list"
-        android:theme="@style/Theme.MaterialComponents.Light"
-        android:layout_height="match_parent"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <ScrollView
+        android:id="@+id/filterlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="?android:colorBackground"
+        android:elevation="5dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/clsflt"
+                style="?android:windowTitleStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:background="#E0E0E0"
+                android:drawableStart="@drawable/back_nav"
+                android:drawablePadding="10dp"
+                android:padding="5dp"
+                android:text="Filter"
+                android:textAlignment="viewStart"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#803E3E3E"
+                android:text="Happen when..." />
+
+            <Spinner
+                android:id="@+id/bd"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:spinnerMode="dialog" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#803E3E3E"
+                android:text="Search by" />
+
+            <Spinner
+                android:id="@+id/t2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:spinnerMode="dialog" />
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <GridView
+        android:id="@+id/list"
+        android:fitsSystemWindows="true"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="0px"
+            android:elevation="5dp"
+            android:layout_margin="5dp"
+            android:background="@android:drawable/editbox_background"
+            android:layout_height="50dp">
+            <SearchView
+                android:id="@+id/search_bar"
+                android:searchIcon="@drawable/search"
+                android:iconifiedByDefault="false"
+                android:closeIcon="@drawable/close"
+                android:commitIcon="@drawable/close"
+                android:goIcon="@drawable/next"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+</LinearLayout>

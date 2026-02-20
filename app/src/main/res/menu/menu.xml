@@ -4,10 +4,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/app_bar_search"
-        android:icon="?android:attr/actionModeWebSearchDrawable"
-        android:title="Search"
-        android:actionViewClass="android.widget.SearchView"
-        android:showAsAction="always"
-        tools:ignore="AppCompatResource" />
+        android:id="@+id/filter"
+        android:title="Search Filter"
+        android:checked="false"
+        android:checkable="true"
+        android:orderInCategory="2" />
+
+    <item android:title="Enter manually">
+        <menu>
+            <item android:id="@+id/emp" android:title="Project"/>
+            <item android:id="@+id/emu" android:title="User"/>
+        </menu>
+    </item>
 </menu>
