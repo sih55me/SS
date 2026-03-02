@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="100dp"
+    android:orientation="vertical">
+    <LinearLayout
+        android:background="@android:drawable/toast_frame"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_margin="5dp"
+        android:backgroundTint="?android:colorAccent"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:textColor="?android:textColorPrimaryInverse"
+            android:id="@+id/close"
+            android:background="?android:selectableItemBackground"
+            android:drawableTint="?android:textColorPrimaryInverse"
+            android:drawableStart="@drawable/back_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Keyboard Preference" />
+
+
+
+    </LinearLayout>
+    <ScrollView
+        android:layout_margin="5dp"
+        android:background="?android:colorBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:background="?android:colorBackground"
+                android:elevation="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="15dp"
+                    android:paddingTop="5dp"
+                    android:text="Window controls" />
+
+                <ToggleButton
+                    android:checkMark="?android:listChoiceIndicatorMultiple"
+                    android:id="@+id/minimize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/minimze_pref"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="?android:textColorPrimary"
+                    android:padding="15dp"
+                    android:textOn="Restore"
+                    android:textOff="Minimize"
+                    android:textColor="?android:textColorPrimary" />
+
+                <ToggleButton
+                    android:checkMark="?android:listChoiceIndicatorMultiple"
+                    android:id="@+id/isdrg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:drawableStart="@drawable/drag_pref"
+                    android:drawablePadding="10dp"
+                    android:tint="?android:colorControlNormal"
+                    android:padding="15dp"
+                    android:textOn="Draggable"
+                    android:textOff="Undraggable"
+                    android:textColor="?android:textColorPrimary" />
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?android:colorBackground"
+                android:elevation="5dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="15dp"
+                    android:paddingTop="5dp"
+                    android:text="Transparent" />
+
+                <SeekBar
+                    android:id="@+id/trans"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="10"
+                    android:padding="15dp"
+                    android:progress="10" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</LinearLayout>

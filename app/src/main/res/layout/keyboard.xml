@@ -1,21 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="360dp"
     android:orientation="vertical">
+    <LinearLayout
+        android:background="@android:drawable/toast_frame"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_margin="5dp"
+        android:backgroundTint="?android:colorAccent"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/close"
+            android:tint="?android:textColorPrimaryInverse"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/close"/>
+
+        <Button
+            android:textColor="?android:textColorPrimaryInverse"
+            android:id="@+id/drag"
+            android:background="@null"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Keyboard" />
+        <ImageButton
+            android:id="@+id/more"
+            android:tint="?android:textColorPrimaryInverse"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:layout_width="35dp"
+            android:rotation="-90"
+            android:layout_height="match_parent"
+            android:src="@drawable/prefs"/>
+
+
+    </LinearLayout>
+
 
     <android.inputmethodservice.KeyboardView
-        android:layout_width="match_parent"
         android:id="@+id/key"
-        android:layout_height="match_parent"/>
-    <ImageButton
-        android:layout_width="50dp"
-        android:rotation="-90"
-        android:layout_height="50dp"
-        android:id="@+id/back"
-        android:background="?android:selectableItemBackgroundBorderless"
-        android:src="@drawable/back">
+        android:layout_gravity="center"
+        style="@style/SS.KeyboardView"
+        android:visibility="visible"
+        android:layout_margin="5dp"
+        android:layout_width="360dp"
+        android:layout_height="360dp"/>
 
-    </ImageButton>
+
 
 </LinearLayout>

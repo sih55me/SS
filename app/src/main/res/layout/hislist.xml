@@ -1,54 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
-    <cakar.search.CP
-        android:layout_width="match_parent"
-        android:id="@+id/pr"
-        android:max="20"
-        android:indeterminate="true"
-        android:visibility="visible"
-        style="@android:style/Widget.Holo.ProgressBar.Horizontal"
-        android:layout_height="wrap_content"/>
+
 
     <ListView
         android:layout_width="match_parent"
         android:id="@+id/list"
+        android:layout_weight="1"
         android:layout_height="match_parent">
 
     </ListView>
 
+    <TextView
+        android:id="@+id/loa"
+        style="?android:windowTitleStyle"
+        android:layout_width="match_parent"
+        android:layout_height="700dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Plz wait bozo..."
+        android:textAlignment="center"
+        android:textColor="?android:colorAccent"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:padding="5dp"
-        android:elevation="5dp"
-        android:visibility="gone"
-        android:background="#30000000"
-        android:orientation="horizontal">
-        <Space
-            android:layout_width="wrap_content"
+        android:background="?android:colorBackground"
+        android:elevation="15dp"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <cakar.search.CP
+            android:layout_width="match_parent"
+            android:id="@+id/pr"
+            android:max="20"
+            android:indeterminate="true"
+            android:visibility="visible"
+            style="?android:progressBarStyleHorizontal"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:theme="@style/Theme.SS"
+            android:orientation="horizontal">
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/prev"
-            android:textColor="@color/white"
-            style="?android:borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Previous" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/prev"
+                style="?materialButtonOutlinedStyle"
+                android:layout_margin="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Previous" />
 
 
 
-        <Button
-            android:id="@+id/next"
-            android:textColor="@color/white"
-            style="?android:borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Next" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/next"
+                android:layout_margin="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next" />
+        </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

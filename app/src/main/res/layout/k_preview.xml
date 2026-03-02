@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="40sp"
+    android:textColor="?android:attr/textColorPrimaryInverse"
+    android:backgroundTint="?android:textColorPrimary"
+    android:elevation="5dp"
+    android:padding="15dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:text="eee"
+    android:drawablePadding="10dp"
+    android:drawableTint="?android:attr/colorAccent"
+    android:minWidth="32dip"
+    android:gravity="center"
+    android:background="@android:drawable/toast_frame"/>

@@ -6,16 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
+        android:layout_gravity="center_horizontal"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:layout_height="wrap_content">
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="5dp"
-            android:minWidth="390dp"
             android:layout_margin="5dp"
+            android:id="@+id/usrcon"
+            android:alpha="0.1"
             android:backgroundTint="?android:colorBackground"
             android:padding="10dp"
             android:background="@android:drawable/dialog_holo_light_frame"
@@ -45,14 +47,14 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:textIsSelectable="true"
                         android:id="@+id/usr"
+                        android:drawableEnd="?android:actionModeCopyDrawable"
                         android:textSize="20sp"
                         style="?android:textAppearanceLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        tools:text="User" />
+                        android:text="Loading...." />
 
                     <TextView
                         android:id="@+id/ibio"
@@ -76,6 +78,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:padding="10dp"
+                android:id="@+id/ams"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
@@ -96,6 +100,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ids"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
@@ -117,23 +123,20 @@
                     tools:text="ahihi" />
             </LinearLayout>
         </LinearLayout>
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ActionMenuView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:elevation="5dp"
+            android:isScrollContainer="false"
+            android:theme="@style/Theme.Material3.DynamicColors.Light"
+            android:id="@+id/action"
+            android:alpha="0.1"
             android:layout_margin="15dp"
             android:backgroundTint="?android:colorBackground"
-            android:padding="10dp"
             android:background="@android:drawable/dialog_holo_light_frame"
-            android:orientation="vertical">
-            <ActionMenuView
-                android:id="@+id/action"
-                android:orientation="vertical"
-                android:minWidth="410dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </FrameLayout>
+            android:orientation="vertical"/>
     </LinearLayout>
+
 
 
 </ScrollView>

@@ -1,4 +1,4 @@
-package cakar.search
+package cakar.search.filetype
 
 import android.os.Parcel
 import android.os.Parcelable

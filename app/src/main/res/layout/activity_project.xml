@@ -2,194 +2,59 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="960px"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".ProjectActivity">
-    <FrameLayout
-        android:id="@+id/mainc"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-        <WebView
-            android:id="@+id/main"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <Button
-            android:theme="@android:style/Theme"
-            android:layout_width="match_parent"
-            android:textSize="40sp"
-            android:id="@+id/start"
-            android:text="\n🏁\n\nPlay"
-            android:layout_height="match_parent"/>
-    </FrameLayout>
-
-
-
     <LinearLayout
+        android:background="@android:drawable/toast_frame"
         android:layout_width="match_parent"
-        android:layout_weight="1.2"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="35dp"
+        android:layout_margin="5dp"
+        android:backgroundTint="?android:colorAccent"
+        android:orientation="horizontal">
+
         <ImageButton
-            android:layout_width="match_parent"
-            style="?android:borderlessButtonStyle"
-            android:id="@+id/expanded"
-            android:tag="false"
-            android:gravity="center"
-            android:src="@android:drawable/arrow_up_float"
-            android:layout_height="25dp"/>
+            android:id="@+id/close"
+            android:tint="?android:textColorPrimaryInverse"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/close"/>
 
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1">
-
-            <LinearLayout
-                android:id="@android:id/tabcontent"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/desc"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    android:textIsSelectable="true">
-
-                </TextView>
-
-                <TextView
-                    android:id="@+id/ins"
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:textIsSelectable="true">
-
-                </TextView>
-
-                <LinearLayout
-                    android:id="@+id/more"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textIsSelectable="true"
-                        android:textSize="20sp"
-                        android:layout_marginBottom="3dp"
-                        android:textStyle="italic" />
-
-                    <TextView
-                        android:id="@+id/info"
-                        android:layout_marginBottom="5dp"
-                        android:textIsSelectable="true"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <View
-                        android:id="@+id/divider"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?android:attr/listDivider" />
-
-                    <HorizontalScrollView
-                        android:layout_width="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:id="@+id/stat"
-                            android:text="❤️  0   💥  0"
-                            android:gravity="center_vertical"
-                            android:textIsSelectable="true"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-                    </HorizontalScrollView>
-
-
-                    <View
-                        android:id="@+id/divider2"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?android:attr/listDivider" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        tools:text="User"
-                        android:id="@+id/crea"
-                        android:drawableTint="?android:colorControlNormal"
-                        android:drawableEnd="@drawable/next"
-                        android:background="?android:selectableItemBackground"
-                        style="?android:textAppearanceLarge"
-                        android:gravity="center_vertical"
-                        android:layout_height="56dp"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?android:attr/listDivider" />
-
-                    <LinearLayout
-                        android:id="@+id/remix_lay"
-                        android:layout_marginTop="10dp"
-                        tools:visibility="visible"
-                        android:visibility="gone"
-                        android:layout_marginBottom="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:text="Remixes"
-                            android:paddingStart="5dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginEnd="5dp"
-                            android:paddingEnd="5dp"
-                            android:textStyle="italic"
-                            android:gravity="center_vertical"
-                            android:background="@android:drawable/toast_frame"
-                            android:backgroundTint="#1AA6A6A6"
-                            android:layout_height="wrap_content"/>
-
-                        <Button
-                            android:layout_width="match_parent"
-                            android:text="Original version"
-                            android:id="@+id/ori"
-                            android:drawablePadding="10dp"
-                            android:drawableTint="?android:colorControlNormal"
-                            android:drawableStart="@android:drawable/stat_notify_sync_noanim"
-                            android:enabled="false"
-                            android:gravity="center_vertical"
-                            android:layout_height="wrap_content"/>
-                        <Button
-                            android:layout_width="match_parent"
-                            android:text="Original-Remix version"
-                            android:id="@+id/orire"
-                            android:enabled="false"
-                            android:drawablePadding="10dp"
-                            android:drawableTint="?android:colorControlNormal"
-                            android:drawableStart="@android:drawable/stat_notify_sync_noanim"
-                            android:gravity="center_vertical"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-
-                </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
-
+        <Button
+            android:textColor="?android:textColorPrimaryInverse"
+            android:id="@+id/drag"
+            android:background="@null"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Project" />
+        <ImageButton
+            android:id="@+id/more"
+            android:tint="?android:textColorPrimaryInverse"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:layout_width="35dp"
+            android:rotation="-90"
+            android:layout_height="match_parent"
+            android:src="@drawable/back_nav"/>
 
 
     </LinearLayout>
+    <WebView
+        android:id="@+id/main"
+        android:isScrollContainer="false"
+        android:layout_width="960px"
+        android:layout_height="820px" />
+    <View
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/menu"
+        android:layout_height="wrap_content"/>
+
+
+
+
 
 
 

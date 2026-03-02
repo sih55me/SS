@@ -1,6 +1,6 @@
 [versions]
-agp = "8.5.1"
-kotlin = "1.9.0"
+agp = "8.13.2"
+kotlin = "2.3.10"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -13,6 +13,8 @@ navigationUiKtx = "2.8.1"
 volley = "1.2.1"
 glide = "5.0.0-rc01"
 activity = "1.9.3"
+listitemview = "master-SNAPSHOT"
+photoviewDialog = "1.0.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -24,9 +26,12 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
+photoview = { module = "io.getstream:photoview", version.ref = "photoviewDialog" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+listitemview = { group = "com.github.sih55me", name = "ListItemView", version.ref = "listitemview" }
+photoview-dialog = { group = "io.getstream", name = "photoview-dialog", version.ref = "photoviewDialog" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

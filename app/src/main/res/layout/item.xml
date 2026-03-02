@@ -2,6 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:elevation="5dp"
+    android:foreground="?android:selectableItemBackground"
+    android:backgroundTint="?android:colorBackground"
     android:background="@android:drawable/dialog_holo_dark_frame"
     android:layout_height="wrap_content">
 
@@ -14,26 +17,28 @@
     <TextView
         android:id="@+id/title"
         android:textAlignment="viewStart"
-        style="?android:borderlessButtonStyle"
-        android:textColor="@color/white"
+        style="?android:textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/thumbnail"
         android:paddingLeft="@dimen/album_title_padding"
         android:maxLines="1"
+        tools:text="Ok"
+        android:paddingRight="@dimen/album_title_padding"
         android:paddingTop="@dimen/album_title_padding"
-        android:paddingRight="40dp"
         android:text="" />
 
     <TextView
         android:id="@+id/count"
+        tools:text="Ok"
+        style="?android:textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
         android:paddingLeft="@dimen/album_title_padding"
         android:paddingRight="@dimen/album_title_padding"
-        android:paddingBottom="@dimen/songs_count_padding_bottom"
-        android:textSize="@dimen/songs_count" />
+        android:layout_marginBottom="7dp"
+        android:paddingBottom="@dimen/songs_count_padding_bottom" />
 
 
 
