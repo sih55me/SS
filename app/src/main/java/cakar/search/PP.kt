@@ -1,49 +1,47 @@
 package cakar.search
 
-import android.app.Activity
+import android.app.ActionBar
 import android.app.AlertDialog
-import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
 import android.graphics.Point
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.text.InputType
-import android.text.SpannableStringBuilder
-import android.view.ContextThemeWrapper
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
 import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.ListView
-import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDialog
+import android.app.Activity
+import android.app.Dialog
+import android.app.DialogFragment
+import android.app.Fragment
+import android.os.Build
+import android.os.Handler
+import android.transition.Explode
+import android.transition.Fade
+import android.util.Log
+import android.view.ActionMode
+import android.view.Gravity
+import android.view.ViewGroup
+import android.view.Window
 import androidx.core.graphics.drawable.toDrawable
 import cakar.search.adapter.Adapter
 import cakar.search.databinding.HislistBinding
 import cakar.search.databinding.PpBinding
 import cakar.search.filetype.Project
 import cakar.search.filetype.User
-import com.bumptech.glide.Glide
-import io.getstream.photoview.dialog.PhotoViewDialog
+import com.squareup.picasso.Picasso
+
 import kotlin.getValue
 
-class PP: AppCompatActivity() {
+class PP: Activity() {
 
     lateinit var p: User
     
@@ -56,14 +54,19 @@ class PP: AppCompatActivity() {
     var onBacks: MutableList<Any> = mutableListOf()
 
 
-    private fun ListView.hU(l: List<User>){
-        onItemClickListener = AdapterView.OnItemClickListener{ _, _, ind, _ ->
-            val i = Intent(context, PP::class.java)
-            i.putExtra("user", l[ind].title)
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(i)
+    companion object{
+        private fun ListView.hU(l: List<User>) {
+            onItemClickListener = AdapterView.OnItemClickListener { _, _, ind, _ ->
+                val i = Intent(context, PP::class.java)
+                i.putExtra("user", l[ind].title)
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(i)
+            }
         }
     }
+
+
+    private var openPage = 0
 
     private fun fo(){
         try{
@@ -80,23 +83,19 @@ class PP: AppCompatActivity() {
 
         }
     }
-    inner class HisFlwi: ListDialog(this) {
+    class HisFlwi: Listo() {
         private val l = arrayListOf<User>()
-        override fun onSaveInstanceState(): Bundle {
-            return super.onSaveInstanceState().also {
+        override fun onSaveInstanceState(outState: Bundle) {
+            outState.also {
                 it.putParcelableArrayList("l", l)
             }
         }
-        init {
-            setTitle("Following")
-        }
-        var onOpenNewP:((Dialog)->Unit) = { d->
-            hideD.add(d)
-        }
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            val d = ArrayAdapter(this@PP,android.R.layout.simple_list_item_1, arrayListOf<String>()).also {
+
+        override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            dialog?.setTitle("Followers")
+            val d = ArrayAdapter(activity,android.R.layout.simple_list_item_1, arrayListOf<String>()).also {
                 hb.list.adapter = it
             }
             hb.list.hU(l)
@@ -108,73 +107,69 @@ class PP: AppCompatActivity() {
                         d.notifyDataSetChanged()
                     }
                 } else {
-                    Search(this@PP).fetchFollowingFromUser(p.title) {
+                    sm.fetchFollowingFromUser(u) {
                         l.add(it)
                         d.add(it.title)
                         d.notifyDataSetChanged()
                         hb.pr.isIndeterminate = false
                         hb.pr.progress += 1
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = ofs != 0
                     }
                 }
             }
 
             hb.next.setOnClickListener {
-                if(d.count == 20){
-                    ofs += 20
+                if(d.count == 10){
+                    ofs += 10
                     l.clear()
                     d.clear()
                     hb.pr.progress = 0
                     hb.pr.isIndeterminate = true
-                    Search(this@PP).fetchFollowingFromUser(p.title, ofs) {
+                    sm.fetchFollowingFromUser(u, ofs) {
                         l.add(it)
                         d.add(it.title)
                         d.notifyDataSetChanged()
                         hb.pr.isIndeterminate = false
                         hb.pr.progress += 1
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = ofs != 0
                     }
                 }
             }
             hb.prev.setOnClickListener {
                 if(ofs != 0){
-                    ofs -= 20
+                    ofs -= 10
                     l.clear()
                     d.clear()
                     hb.pr.progress = 0
                     hb.pr.isIndeterminate = true
-                    Search(this@PP).fetchFollowersFromUser(p.title, ofs) {
+                    sm.fetchFollowersFromUser(u, ofs) {
                         l.add(it)
                         d.add(it.title)
                         d.notifyDataSetChanged()
                         hb.pr.isIndeterminate = false
                         hb.pr.progress += 1
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = ofs != 0
                     }
                 }
             }
         }
     }
-    inner class HisFlwe: ListDialog(this) {
+    class HisFlwe: Listo() {
         private val l = arrayListOf<User>()
 
-        override fun onSaveInstanceState(): Bundle {
-            return super.onSaveInstanceState().also {
+        override fun onSaveInstanceState(outState: Bundle) {
+            outState.also {
                 it.putParcelableArrayList("l", l)
             }
         }
-        init {
-            setTitle("Followers")
-        }
-        var onOpenNewP:((Dialog)->Unit) = { d->
-            hideD.add(d)
-        }
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            val d = ArrayAdapter(this@PP,android.R.layout.simple_list_item_1, arrayListOf<String>()).also {
+
+        override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            dialog?.setTitle("Followers")
+            val d = ArrayAdapter(activity,android.R.layout.simple_list_item_1, arrayListOf<String>()).also {
                 hb.list.adapter = it
             }
             hb.list.hU(l)
@@ -186,68 +181,69 @@ class PP: AppCompatActivity() {
                         d.notifyDataSetChanged()
                     }
                 } else {
-                    Search(this@PP).fetchFollowersFromUser(p.title) {
+                    sm.fetchFollowersFromUser(u) {
                         l.add(it)
                         d.add(it.title)
                         d.notifyDataSetChanged()
                         hb.pr.isIndeterminate = false
                         hb.pr.progress += 1
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = ofs != 0
                     }
                 }
             }
             hb.next.setOnClickListener {
-                if(d.count == 20){
-                    ofs += 20
+                if(d.count == 10){
+                    ofs += 10
                     hb.pr.progress = 0
                     hb.pr.isIndeterminate = true
                     l.clear()
                     d.clear()
-                    Search(this@PP).fetchFollowersFromUser(p.title, ofs) {
+                    sm.fetchFollowersFromUser(u, ofs) {
                         l.add(it)
                         d.add(it.title)
                         d.notifyDataSetChanged()
                         hb.pr.isIndeterminate = false
                         hb.pr.progress += 1
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = ofs != 0
                     }
                 }
             }
             hb.prev.setOnClickListener {
                 if(ofs != 0){
-                    ofs -= 20
+                    ofs -= 10
                     l.clear()
                     hb.pr.progress = 0
                     hb.pr.isIndeterminate = true
                     d.clear()
-                    Search(this@PP).fetchFollowersFromUser(p.title, ofs) {
+                    sm.fetchFollowersFromUser(u, ofs) {
                         l.add(it)
                         d.add(it.title)
                         d.notifyDataSetChanged()
                         hb.pr.isIndeterminate = false
                         hb.pr.progress += 1
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = ofs != 0
                     }
                 }
             }
         }
     }
-    inner class HisProjects: ListDialog(this) {
-        init {
-            setTitle("Shared project")
+    class HisProjects: Listo() {
+        init{
+            showsDialog = false
         }
-        private val d = Adapter(this@PP, arrayListOf(), true)
+        private val d by lazy{ Adapter(activity, arrayListOf(), true)}
 
-        override fun onSaveInstanceState(): Bundle {
-            return super.onSaveInstanceState().also {
+        override fun onSaveInstanceState(outState: Bundle) {
+            outState.also {
                 it.putParcelableArrayList("l", d.data)
             }
         }
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
+
+        override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
             hb.list.adapter = d
             d.data.clear()
             savedInstanceState?.getParcelableArrayList<Project>("l") .also {
@@ -255,11 +251,11 @@ class PP: AppCompatActivity() {
                     d.data.addAll(it)
                     d.notifyDataSetChanged()
                 }else{
-                    Search(this@PP).searchProjectFromUser(p.title){
+                    sm.searchProjectFromUser(u){
                         d.setdata(it)
                         hb.pr.isIndeterminate = false
                         hb.pr.progress += 1
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = false
                     }
                 }
@@ -267,16 +263,16 @@ class PP: AppCompatActivity() {
 
 
             hb.next.setOnClickListener {
-                if(d.count == 20){
+                if(d.count == 10){
                     hb.pr.progress = 0
                     hb.pr.isIndeterminate = true
-                    ofs += 20
+                    ofs += 10
                     d.flush()
-                    Search(this@PP).searchProjectFromUser(p.title, ofs) {
+                    sm.searchProjectFromUser(u, ofs) {
                         hb.pr.isIndeterminate = false
                         hb.pr.progress +=1
                         d.setdata(it)
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = ofs != 0
                     }
                 }
@@ -285,32 +281,33 @@ class PP: AppCompatActivity() {
                 if(ofs != 0){
                     hb.pr.progress = 0
                     hb.pr.isIndeterminate = true
-                    ofs -= 20
+                    ofs -= 10
                     d.flush()
-                    Search(this@PP).searchProjectFromUser(p.title, ofs) {
+                    sm.searchProjectFromUser(u, ofs) {
                         hb.pr.isIndeterminate = false
                         hb.pr.progress +=1
                         d.setdata(it)
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = ofs != 0
                     }
                 }
             }
         }
     }
-    inner class HisFProjects: ListDialog(this) {
-        init {
-            setTitle("Favorites project")
+    class HisFProjects: Listo() {
+        init{
+            showsDialog = false
         }
-        private val d = Adapter(this@PP, arrayListOf(), true)
+        private val d by lazy{ Adapter(activity, arrayListOf(), true)}
 
-        override fun onSaveInstanceState(): Bundle {
-            return super.onSaveInstanceState().also {
+        override fun onSaveInstanceState(outState: Bundle) {
+            outState.also {
                 it.putParcelableArrayList("l", d.data)
             }
         }
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
+
+        override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
             hb.list.adapter = d
             d.data.clear()
             savedInstanceState?.getParcelableArrayList<Project>("l") .also {
@@ -318,26 +315,26 @@ class PP: AppCompatActivity() {
                     d.data.addAll(it)
                     d.notifyDataSetChanged()
                 }else{
-                    Search(this@PP).searchFavProjectFromUser(p.title) {
+                    sm.searchFavProjectFromUser(u) {
                         d.setdata(it)
                         hb.pr.isIndeterminate = false
                         hb.pr.progress += 1
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = false
                     }
                 }
             }
             hb.next.setOnClickListener {
-                if(d.count == 20){
-                    ofs += 20
+                if(d.count == 10){
+                    ofs += 10
                     d.flush()
                     hb.pr.progress = 0
                     hb.pr.isIndeterminate = true
-                    Search(this@PP).searchFavProjectFromUser(p.title, ofs) {
+                    sm.searchFavProjectFromUser(u, ofs) {
                         d.setdata(it)
                         hb.pr.isIndeterminate = false
                         hb.pr.progress += 1
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = ofs != 0
                     }
                 }
@@ -346,111 +343,107 @@ class PP: AppCompatActivity() {
                 if(ofs != 0){
                     hb.pr.progress = 0
                     hb.pr.isIndeterminate = true
-                    ofs -= 20
+                    ofs -= 10
                     d.flush()
-                    Search(this@PP).searchFavProjectFromUser(p.title, ofs) {
+                    sm.searchFavProjectFromUser(u, ofs) {
                         d.setdata(it)
                         hb.pr.isIndeterminate = false
                         hb.pr.progress += 1
-                        hb.next.isEnabled = hb.pr.progress == 20
+                        hb.next.isEnabled = hb.pr.progress == 10
                         hb.prev.isEnabled = ofs != 0
                     }
                 }
             }
         }
     }
-    open class ListDialog(a: Activity): AppCompatDialog(a, R.style.Theme_SS_ProPre){
-        val hb  = HislistBinding.inflate(LayoutInflater.from(context))
+    open class Listo(): DialogFragment(){
+
+        var u = ""
+        val sm by lazy{
+            Search(activity)
+        }
+        val hb  by lazy { HislistBinding.inflate(LayoutInflater.from(activity)) }
         var onButtonClick = DialogInterface.OnClickListener{_,_->}
 
-        init {
-            setContentView(hb.root)
+        override fun onCreateView(
+            inflater: LayoutInflater?,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
+          return (hb.root)
         }
 
-        override fun onCreate(savedInstanceState: Bundle?) {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
+            return object : Dialog(activity, R.style.Theme_SS_ProPre){
+                init {
+                    window!!.setWindowAnimations(android.R.style.Animation_InputMethod)
+                    window!!.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                    window!!.setDimAmount(0.4F)
+                    setCanceledOnTouchOutside(true)
+                    when(resources.configuration.orientation){
+                        Configuration.ORIENTATION_LANDSCAPE -> {
+                            window!!.setLayout(window!!.windowManager.defaultDisplay.width/2, window!!.windowManager.defaultDisplay.height)
+                            window!!.setGravity(Gravity.END)
+                        }
+                        Configuration.ORIENTATION_PORTRAIT -> {
+                            window!!.setLayout(window!!.windowManager.defaultDisplay.width, (window!!.windowManager.defaultDisplay.height/1.2).toInt())
+                            window!!.setGravity(Gravity.BOTTOM)
+                        }
+                    }
+
+                }
+
+                override fun onCreateOptionsMenu(menu: Menu): Boolean {
+                    menu.add("Close").setIcon(R.drawable.close).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setOnMenuItemClickListener {
+                        this@Listo.dismiss()
+                        true
+                    }
+                    return super.onCreateOptionsMenu(menu)
+                }
+            }
+        }
+
+        override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            if(isHidden)return
             ofs = (savedInstanceState?.getInt("ofs")?:0).also {
                 hb.pr.isIndeterminate = false
                 hb.pr.progress = it
             }
-            hb.list.emptyView = hb.loa
-            super.onCreate(savedInstanceState)
-        }
-
-        override fun show() {
-            super.show()
-        }
-
-
-        override fun onStart() {
-            super.onStart()
-        }
-
-
-        override fun onCreateOptionsMenu(menu: Menu): Boolean {
-            menu.add("Close").setIcon(R.drawable.close).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setOnMenuItemClickListener {
-                dismiss()
-                true
+            sm.limitGet = 10
+            sm.onError = {
+                hb.loa.text = "Error when fetching data"
+                Log.e("Error@rslt", sm.resultF)
+                Log.e("Error@type", it.toString())
+                Log.e("Error@reason", sm.reason)
             }
-            return super.onCreateOptionsMenu(menu)
+            hb.list.emptyView = hb.loa
         }
+
+        
         var ofs = 0
 
-        override fun onSaveInstanceState(): Bundle {
-            return super.onSaveInstanceState().also {
+        override fun onSaveInstanceState(outState: Bundle) {
+            outState.also {
                 it.putInt("ofs", ofs)
             }
         }
 
 
-        override fun dismiss() {
+        override fun onDestroyView() {
+            super.onDestroyView()
             hb.list.adapter = null
-            super.dismiss()
         }
     }
     
     fun d(s: User){
         s.also {
-            Glide.with(this).load(it.thumb).into(bin.imageView)
+            Picasso.get().load(it.thumb).into(bin.imageView)
             bin.imageView.setOnClickListener { _->
-                PhotoViewDialog.Builder(this, arrayOf(s!!.thumb)){ v, u->
-                    Glide.with(this)
-                        .load(u)
-                        .placeholder(resources.getColor(android.R.color.background_dark).toDrawable())
-                        .error(resources.getColor(android.R.color.holo_red_light).toDrawable())
-                        .into(v)
-                }.allowSwipeToDismiss(true).withHiddenStatusBar(false).show(true)
+
             }
+
             bin.usr.text = it.title
-            val meUser = listOf<String>("stablecat", "zombiew358")
-            val spea = AlertDialog.Builder(this).setTitle("What's does it mean?")
-            if(it.title in meUser){
-                bin.usr.setTextColor(resources.getColor(android.R.color.holo_blue_bright))
-                spea.setMessage("He/She is developer's alt account (of this app)")
-                val di = spea
-                    .setNegativeButton("Oh, i see.", null)
-                    .setPositiveButton("But who?"){_,_->
-                        val i = Intent(this, PP::class.java)
-                        i.putExtra("user", "wiwolf360")
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(i)
-                    }
-                    .create()
-                bin.usr.setOnClickListener {
-                    di.show()
-                }
-            }else if(it.title == "wiwolf360"){
-                spea.setMessage("Developer of this app")
-                bin.usr.setTextColor(resources.getColor(android.R.color.holo_green_dark))
-                bin.usr.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_manage,0,0,0)
-                val di = spea.setPositiveButton("Oh, i see", null).create()
-                bin.usr.setOnClickListener {
-                    di.show()
-                }
-            }else{
-                bin.usr.setOnClickListener {
-                    it.performLongClick()
-                }
-            }
             if(it.bio.isNotEmpty()){
                 bin.ams.visibility = View.VISIBLE
             }
@@ -477,30 +470,19 @@ class PP: AppCompatActivity() {
     }
 
     private fun lay(newConfig: Configuration){
-        val s  = Point()
-        windowManager.defaultDisplay.getSize(s)
-        if(!resources.getBoolean(R.bool.tablet)){
-            when(newConfig.orientation){
-                Configuration.ORIENTATION_LANDSCAPE -> {
-                    bin.root.layoutParams.width = (windowManager.defaultDisplay.width/2).toInt()
-                }
 
-                else -> {
-                    bin.root.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                }
-            }
-        }else{
-            bin.root.layoutParams.width = window.decorView.width/2
-        }
     }
+
+    val u get()= intent.getStringExtra("user")?:""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(bin.root)
+
         lay(resources.configuration)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        val u = intent.getStringExtra("user")?: return finish()
+
+        actionBar?.setDisplayShowTitleEnabled(false)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
         val s = Point()
         val se = Search(this)
         val e = ProgressDialog(this)
@@ -514,7 +496,6 @@ class PP: AppCompatActivity() {
             setCanceledOnTouchOutside(false)
             setCancelable(false)
         }
-
         se.onError = {
             if(it == -1.0){
                 bin.root.animate().alpha(0F)
@@ -564,72 +545,64 @@ class PP: AppCompatActivity() {
             }
         }
 
-        val copyCM = View.OnCreateContextMenuListener{ menu, v, _ ->
-            menu.add("Copy text").setOnMenuItemClickListener {
-                if(v is TextView){
-                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("text", v.text))
-                }
-                true
+
+        bin.usr.customSelectionActionModeCallback = object : ActionMode.Callback{
+            override fun onCreateActionMode(
+                p0: ActionMode?,
+                menu: Menu?
+            ): Boolean {
+
+                return true
             }
 
-            menu.add("Select text").setOnMenuItemClickListener {
-                if(v is TextView){
-                    val p = AlertDialog.Builder(this)
-                    val sl = EditText(this)
-                    p.setView(sl)
-                    p.setTitle("Select text...")
-                    sl.setBackgroundDrawable(null)
-                    sl.setPaddingRelative(10,5,10,5)
-                    p.setIconAttribute(android.R.attr.actionModeCopyDrawable)
-                    p.setPositiveButton("Done", null)
-                    val pe = p.create()
-                    pe.window!!.setGravity(Gravity.BOTTOM)
-                    sl.setTextIsSelectable(true)
-                    sl.setKeyListener(null);
-                    sl.setInputType(InputType.TYPE_NULL);
-                    sl.text = SpannableStringBuilder(v.text)
-                    pe.setOnShowListener {
-                        Handler(mainLooper).postDelayed({
-                            pe.setTitle("Select text")
-                            sl.selectAll()
-                        },2000L)
-
+            override fun onPrepareActionMode(
+                p0: ActionMode?,
+                menu: Menu?
+            ): Boolean {
+                if(menu == null)return true
+                val meUser = listOf<String>("stablecat", "zombiew358")
+                val spea = AlertDialog.Builder(this@PP).setTitle("What's does it mean?")
+                if(bin.usr.text in meUser){
+                    spea.setMessage("He/She is developer's alt account (of this app)")
+                    val di = spea
+                        .setNegativeButton("Oh, i see.", null)
+                        .setPositiveButton("But who?"){_,_->
+                            val i = Intent(this@PP, PP::class.java)
+                            i.putExtra("user", "wiwolf360")
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(i)
+                        }
+                        .create()
+                    menu.add("What does it mean?").setOnMenuItemClickListener {
+                        di.show()
+                        true
                     }
-                    pe.show()
+                }else if(bin.usr.text == "wiwolf360"){
+                    spea.setMessage("Developer of this app")
+                    val di = spea.setPositiveButton("Oh, i see", null).create()
+                    menu.add("What does it mean?").setOnMenuItemClickListener {
+                        di.show()
+                        true
+                    }
                 }
-                true
+                return true
+            }
+
+            override fun onActionItemClicked(
+                p0: ActionMode?,
+                p1: MenuItem?
+            ): Boolean {
+                return bin.usr.onTextContextMenuItem(p1?.itemId?:0)
+            }
+
+            override fun onDestroyActionMode(p0: ActionMode?) {
+
             }
 
         }
 
-        bin.usr.setOnCreateContextMenuListener(copyCM)
-        
+        actionBar?.navigationMode = ActionBar.NAVIGATION_MODE_TABS;
 
-        bin.action.let{
-            it.menu.apply {
-                addSubMenu("Projects") .also{p->
-                    p.item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                    p.add(0,0,0,"Shared").setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                    p.add(0,0,1,"Favorites").setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
-                }
-                addSubMenu("Users") .also { p ->
-                    p.item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                    p.add(0,0,2,"Followers").setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                    p.add(0,0,3,"Following").setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
-                }
-            }
-            it.setOnMenuItemClickListener {
-                if(it.hasSubMenu())return@setOnMenuItemClickListener false
-                if(!::p.isInitialized){
-                    Toast.makeText(this, "User not loaded!", Toast.LENGTH_SHORT).show()
-                    return@setOnMenuItemClickListener false
-                }
-                showDialog(it.order)
-
-                true
-            }
-        }
 
 
 
@@ -652,40 +625,142 @@ class PP: AppCompatActivity() {
         }else{
             s()
         }
-    }
 
-    override fun onPrepareDialog(id: Int, dialog: Dialog?) {
+        val trans = fragmentManager.beginTransaction()
 
-        super.onPrepareDialog(id, dialog)
-    }
+        trans.apply{
+            if(savedInstanceState == null){
+                //onCreate
 
-    override fun onCreateDialog(id: Int): Dialog? {
-        return when(id){
-            0 -> {
-                HisProjects()
+                add(android.R.id.content, HisProjects().also { it.u = u }, "sp")
+                add(android.R.id.content, HisFProjects().also { it.u = u }, "fp")
+
+
             }
-            1 -> {
-                HisFProjects()
-            }
-            2 -> {
-                HisFlwe()
-            }
-            3 -> {
-                HisFlwi()
-            }
-            else -> null
-        }?.also{d->
-            d.setOnDismissListener {
-                removeDialog(id)
-            }
-            d.window!!.setWindowAnimations(android.R.style.Animation_InputMethod)
         }
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            trans.commitNowAllowingStateLoss()
+        }else{
+            trans.commitAllowingStateLoss()
+        }
+        Handler(mainLooper).postDelayed({
+
+            changePage(openPage)
+        },100L)
+        val r = Runnable{
+            actionBar?.apply {
+                val s = Point()
+                windowManager.defaultDisplay.getSize(s)
+                setDisplayShowTitleEnabled(s.x < s.y)
+                navigationMode = ActionBar.NAVIGATION_MODE_TABS
+                addTab(addTab("Projects" , 0))
+                addTab(addTab("Favorite Projects", 1))
+
+
+                Runnable{
+                    if (savedInstanceState != null) {
+                        setSelectedNavigationItem(savedInstanceState.getInt("page"))
+                    }
+                }.also {
+                    Handler(mainLooper).postDelayed(it, 10L)
+                }
+
+            }
+        }
+        Handler(mainLooper).postDelayed(r, 200L)
+
     }
 
+
+
+    private fun addTab(text: String, i: Int): ActionBar.Tab? {
+        return actionBar?.newTab()?.setText(text)?.setTag(i)?.setTabListener(TabAction{_,f->
+            changePage(i)
+        })
+    }
+
+    private fun changePage(openPage: Int) {
+        val l = listOf("sp","fp",)
+        val d = fragmentManager.beginTransaction()
+        d.setReorderingAllowed(true)
+        for(i in l){
+            if(l.indexOf(i) == openPage) {
+                d.show(fragmentManager.findFragmentByTag(i))
+                this.openPage = l.indexOf(i)
+            }else{
+                d.hide(fragmentManager.findFragmentByTag(i))
+            }
+
+        }
+        d.commitAllowingStateLoss()
+    }
+
+
+    override fun onCreateDialog(id: Int): Dialog? {
+        if(id == 0){
+            return object : Dialog(this, R.style.Theme_SS_ProPre){
+                init {
+                    window!!.setWindowAnimations(android.R.style.Animation_InputMethod)
+                    window!!.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                    window!!.setDimAmount(0.4F)
+                    setCanceledOnTouchOutside(true)
+                    when(resources.configuration.orientation){
+                        Configuration.ORIENTATION_LANDSCAPE -> {
+                            window!!.setLayout(window!!.windowManager.defaultDisplay.width/2, window!!.windowManager.defaultDisplay.height)
+                            window!!.setGravity(Gravity.END)
+                        }
+                        Configuration.ORIENTATION_PORTRAIT -> {
+                            window!!.setLayout(window!!.windowManager.defaultDisplay.width, (window!!.windowManager.defaultDisplay.height/1.2).toInt())
+                            window!!.setGravity(Gravity.BOTTOM)
+                        }
+                    }
+                    if(bin.root.parent != null){
+                        (bin.root.parent as ViewGroup).removeView(bin.root)
+                    }
+                    this.setContentView(bin.root)
+                    this.setTitle("About")
+
+                }
+                override fun onCreateOptionsMenu(menu: Menu): Boolean {
+                    menu.add("Close").setIcon(R.drawable.close).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setOnMenuItemClickListener {
+                        dismiss()
+                        true
+                    }
+                    return super.onCreateOptionsMenu(menu)
+                }
+            }
+        }
+        return super.onCreateDialog(id)
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.add("Info")?.setOnMenuItemClickListener {
+            showDialog(0)
+            true
+        }
+        menu?.add("Followers")?.setOnMenuItemClickListener {
+            if(!::p.isInitialized) {
+                Toast.makeText(this, "User not loaded!\nId:${intent.getStringExtra("user")}", Toast.LENGTH_SHORT).show()
+                return@setOnMenuItemClickListener true
+            }
+            HisFlwe().also {
+                it.u = p.title
+            }.show(fragmentManager, "flwe")
+            true
+        }
+        menu?.add("Following")?.setOnMenuItemClickListener {
+            if(!::p.isInitialized) {
+                Toast.makeText(this, "User not loaded!\nId:${intent.getStringExtra("user")}", Toast.LENGTH_SHORT).show()
+                return@setOnMenuItemClickListener true
+            }
+            HisFlwi().also {
+                it.u = p.title
+            }.show(fragmentManager, "flwi")
+            true
+        }
         menu?.add("Share")?.setIcon(R.drawable.share)?.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)?.setOnMenuItemClickListener {
             if(!::p.isInitialized) {
                 Toast.makeText(this, "User not loaded!\nId:${intent.getStringExtra("user")}", Toast.LENGTH_SHORT).show()
@@ -711,6 +786,7 @@ class PP: AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        outState.putInt("page",openPage)
         if(::p.isInitialized){
             outState.putParcelable("p", p)
         }

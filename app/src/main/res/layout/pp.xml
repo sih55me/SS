@@ -2,34 +2,33 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <LinearLayout
-        android:layout_gravity="center_horizontal"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+
         <LinearLayout
+            android:id="@+id/usrcon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="5dp"
-            android:layout_margin="5dp"
-            android:id="@+id/usrcon"
             android:alpha="0.1"
             android:backgroundTint="?android:colorBackground"
-            android:padding="10dp"
-            android:background="@android:drawable/dialog_holo_light_frame"
-            android:orientation="vertical">
+            android:elevation="5dp"
+            android:orientation="vertical"
+            android:padding="5dp"
+            tools:alpha="1">
 
             <LinearLayout
+                android:id="@+id/usrcard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#EDEDED"
-                android:padding="10dp"
+                android:background="#56EDEDED"
                 android:gravity="center_vertical"
-                android:id="@+id/usrcard"
                 android:orientation="horizontal">
 
                 <QuickContactBadge
@@ -42,19 +41,26 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="10dp"
+                    android:layout_weight="1"
                     android:orientation="vertical">
+
+                    <View
+                        android:id="@+id/contxpp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/usr"
-                        android:drawableEnd="?android:actionModeCopyDrawable"
-                        android:textSize="20sp"
                         style="?android:textAppearanceLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:text="Loading...." />
+                        android:drawableEnd="?android:actionModeCopyDrawable"
+                        android:text="Loading...."
+                        android:textIsSelectable="true"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/ibio"
@@ -63,6 +69,7 @@
                         android:layout_weight="1"
                         android:textStyle="bold"
                         tools:text="d|d" />
+
                     <TextView
                         android:id="@+id/con"
                         android:layout_width="wrap_content"
@@ -76,67 +83,76 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:padding="10dp"
                 android:id="@+id/ams"
-                android:visibility="gone"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:visibility="gone">
+
                 <TextView
                     style="?android:textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="About me" />
+                    android:text="About me"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/bio"
-                    android:textIsSelectable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textIsSelectable="true"
                     android:textStyle="bold"
                     tools:text="ahihi" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ids"
-                android:visibility="gone"
                 android:layout_width="match_parent"
-                android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:visibility="gone">
+
                 <TextView
                     style="?android:textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="I'm doing.." />
+                    android:text="I'm doing.."
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/status"
-                    android:textIsSelectable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textIsSelectable="true"
                     android:textStyle="bold"
                     tools:text="ahihi" />
             </LinearLayout>
         </LinearLayout>
-        <ActionMenuView
+
+        <LinearLayout
+            android:id="@+id/action"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:alpha="0.1"
             android:elevation="5dp"
             android:isScrollContainer="false"
-            android:theme="@style/Theme.Material3.DynamicColors.Light"
-            android:id="@+id/action"
-            android:alpha="0.1"
-            android:layout_margin="15dp"
-            android:backgroundTint="?android:colorBackground"
-            android:background="@android:drawable/dialog_holo_light_frame"
-            android:orientation="vertical"/>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:theme="@style/WTheme.SS.AM"
+            android:visibility="visible"
+            tools:alpha="1" />
 
+
+        <FrameLayout
+            android:id="@+id/frg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </FrameLayout>
+    </LinearLayout>
 
 
 </ScrollView>

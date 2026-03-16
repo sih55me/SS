@@ -1,6 +1,6 @@
 package cakar.search
 
-import androidx.appcompat.app.ActionBar
+import android.app.ActionBar
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
@@ -13,10 +13,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.ArrayAdapter
-import androidx.appcompat.widget.SearchView
+import android.widget.SearchView
 import android.widget.Toast
 import android.window.OnBackInvokedCallback
-import androidx.appcompat.app.AppCompatActivity
 import cakar.search.MainActivity.Companion.handleMainMenu
 import cakar.search.adapter.Adapter
 import cakar.search.adapter.SAdapter
@@ -24,7 +23,7 @@ import cakar.search.databinding.ResultBinding
 import cakar.search.filetype.Project
 import cakar.search.filetype.Studia
 
-class Result : AppCompatActivity() {
+class Result : Activity() {
 
     private val padap by lazy{ Adapter(this, arrayListOf()) }
     private val sadap by lazy{ SAdapter(this, arrayListOf()) }
@@ -48,26 +47,31 @@ class Result : AppCompatActivity() {
      *
      */
 
+    fun l(){
 
+        listOf(binding.tabpro, binding.tabstu).forEach{
+            it.apply {
+                val s = Point()
+                windowManager.defaultDisplay.getSize(s)
+                if (!resources.getBoolean(R.bool.tablet)) {
+                    if (s.x > s.y) {
+                        this.numColumns = 2
+                    } else {
+                        this.numColumns = 1
+                    }
+                } else {
+                    this.numColumns = (if (s.x < s.y) 2 else 3)
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
         query = intent.getStringExtra("q").orEmpty()
-        binding.list.apply{
-            val s = Point()
-            windowManager.defaultDisplay.getSize(s)
-            if(!resources.getBoolean(R.bool.tablet)){
-                if(s.x > s.y) {
-                    this.numColumns = 2
-                }else{
-                    this.numColumns = 1
-                }
-            }else{
-                this.numColumns = (if(s.x < s.y) 2 else 3)
-            }
-        }
+        l()
         val se = Search(this@Result)
         val e = ProgressDialog(this@Result)
         se.onError = {
@@ -76,6 +80,8 @@ class Result : AppCompatActivity() {
             }
         }
         if(savedInstanceState != null){
+            padap.data.clear()
+            sadap.data.clear()
             savedInstanceState.getParcelableArrayList<Project>("pdata")?.forEach {
                 padap.setdata(it)
             }
@@ -96,13 +102,14 @@ class Result : AppCompatActivity() {
         }
         skipTo = intent.getIntExtra("skipTo", 0)
         fun pP(){
-            binding.list.adapter = padap
+            binding.tabpro.adapter = padap
             if (padap.data.isEmpty()) {
+                padap.data.clear()
                 e.show()
                 se.searchProject(
                     query, offset = skipTo
                 ) {
-                    if (e.isShowing) {
+                    if (e.isShowing and (sadap.data.isNotEmpty())) {
                         e.dismiss()
                     }
                     padap.setdata(it)
@@ -111,13 +118,14 @@ class Result : AppCompatActivity() {
         }
 
         fun sP(){
-            binding.list.adapter = sadap
+            binding.tabstu.adapter = sadap
             if (sadap.data.isEmpty()) {
+                sadap.data.clear()
                 e.show()
                 se.searchStudia(
                     query, offset = skipTo
                 ) {
-                    if (e.isShowing) {
+                    if (e.isShowing and(padap.data.isNotEmpty())) {
                         e.dismiss()
                     }
                     sadap.setdata(it)
@@ -125,24 +133,26 @@ class Result : AppCompatActivity() {
             }
         }
 
-        fun c(){
-            if (s == 0) {
-                pP()
-            } else if (s == 1) {
-                sP()
+        sP()
+        pP()
+        if(actionBar != null){
+            actionBar?.setTitle("Result of ${query}")
+            actionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+
+        binding.tbh.apply {
+            setup()
+            addTab(newTabSpec("pro").setIndicator("Project").setContent(R.id.tabpro))
+            addTab(newTabSpec("stu").setIndicator("Studio").setContent(R.id.tabstu))
+            setOnTabChangedListener {
+                if(it == "pro"){
+                    pP()
+                }else if(it == "stu"){
+                    sP()
+                }
             }
         }
-        c()
-        if(supportActionBar != null){
-            supportActionBar?.setDisplayShowTitleEnabled(false)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.navigationMode = ActionBar.NAVIGATION_MODE_LIST
-            supportActionBar?.setListNavigationCallbacks(ArrayAdapter(supportActionBar!!.themedContext, R.layout.title_drop, arrayOf("Project", "Studio")), ){ o,_->
-                s = o
-                c()
-                true
-            }
-        }
+
 
     }
 
@@ -215,21 +225,7 @@ class Result : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
     override fun onConfigurationChanged(newConfig: Configuration) {
-        val s  = Point()
-        windowManager.defaultDisplay.getSize(s)
-        if(!resources.getBoolean(R.bool.tablet)){
-            when(newConfig.orientation){
-                Configuration.ORIENTATION_LANDSCAPE -> {
-                    binding.list.numColumns = 2
-                }
-
-                else -> {
-                    binding.list.numColumns = 1
-                }
-            }
-        }else{
-            binding.list.numColumns = ( if(s.x < s.y) 2 else 3)
-        }
+        l()
 
         super.onConfigurationChanged(newConfig)
     }

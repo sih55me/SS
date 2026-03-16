@@ -15,6 +15,10 @@ glide = "5.0.0-rc01"
 activity = "1.9.3"
 listitemview = "master-SNAPSHOT"
 photoviewDialog = "1.0.3"
+library = "0.2.3"
+picasso = "2.8"
+libraryVersion = "2.4.0"
+daimajiaLibrary = "1.1.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,6 +36,10 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 listitemview = { group = "com.github.sih55me", name = "ListItemView", version.ref = "listitemview" }
 photoview-dialog = { group = "io.getstream", name = "photoview-dialog", version.ref = "photoviewDialog" }
+library = { group = "com.linroid.filtermenu", name = "library", version.ref = "library" }
+picasso = { group = "com.squareup.picasso", name = "picasso", version.ref = "picasso" }
+nineoldandroids-library = { group = "com.nineoldandroids", name = "library", version.ref = "libraryVersion" }
+slider-library = { group = "com.daimajia.slider", name = "library", version.ref = "daimajiaLibrary" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

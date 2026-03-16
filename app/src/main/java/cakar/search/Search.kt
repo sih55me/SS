@@ -36,12 +36,14 @@ class Search(private val activity : Activity) {
     }
     val requestQueue = Volley.newRequestQueue(activity.applicationContext)
 
-
+    var resultF = ""
     var onError :((Double)->Unit) = {
 
     }
 
     var reason = ""
+    
+    var limitGet = 20
     
     fun cancelAll(){
         requestQueue.cancelAll("search")
@@ -174,8 +176,9 @@ class Search(private val activity : Activity) {
             throw IllegalArgumentException("Stype must be between 0 and 1")
         }
 
-        val urlT = "https://api.scratch.mit.edu/${searchType[stype]}/${Companion.searchWhat[1]}?q=$query&mode=${modes[mode]}&limit=20&offset=${offset}"
+        val urlT = "https://api.scratch.mit.edu/${searchType[stype]}/${Companion.searchWhat[1]}?q=$query&mode=${modes[mode]}&limit=$limitGet&offset=${offset}"
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
+            resultF = it
             try {
                 Log.i("I URL", it)
                 if((it == "{}") or (it == "[]")){
@@ -212,8 +215,9 @@ class Search(private val activity : Activity) {
             throw IllegalArgumentException("Stype must be between 0 and 1")
         }
 
-        val urlT = "https://api.scratch.mit.edu/${searchType[stype]}/${Companion.searchWhat[0]}?q=$query&mode=${modes[mode]}&limit=20&offset=${offset}"
+        val urlT = "https://api.scratch.mit.edu/${searchType[stype]}/${Companion.searchWhat[0]}?q=$query&mode=${modes[mode]}&limit=$limitGet&offset=${offset}"
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
+            resultF = it
             try {
                 Log.i("I URL", it)
                 if((it == "{}") or (it == "[]")){
@@ -241,8 +245,9 @@ class Search(private val activity : Activity) {
         offset:Int = 0,
         onGet : ((User) -> Unit)={}
     ){
-        val urlT = "https://api.scratch.mit.edu/users/$user/followers?limit=20&offset=${offset}"
+        val urlT = "https://api.scratch.mit.edu/users/$user/followers?limit=$limitGet&offset=${offset}"
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
+            resultF = it
             try {
                 Log.i("I URL", it)
                 if((it == "{}") or (it == "[]")){
@@ -271,8 +276,9 @@ class Search(private val activity : Activity) {
         onGet : ((User) -> Unit)={}
     ){
 
-        val urlT = "https://api.scratch.mit.edu/users/$user/following?limit=20&offset=${offset}"
+        val urlT = "https://api.scratch.mit.edu/users/$user/following?limit=$limitGet&offset=${offset}"
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
+            resultF = it
             try {
                 Log.i("I URL", it)
                 if((it == "{}") or (it == "[]")){
@@ -301,8 +307,9 @@ class Search(private val activity : Activity) {
         onGet : ((Project) -> Unit)={}
     ){
 
-        val urlT = "https://api.scratch.mit.edu/users/$user/projects?limit=20&offset=${offset}"
+        val urlT = "https://api.scratch.mit.edu/users/$user/projects?limit=$limitGet&offset=${offset}"
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
+            resultF = it
             try {
                 Log.i("I URL", it)
                 if((it == "{}") or (it == "[]")){
@@ -330,8 +337,9 @@ class Search(private val activity : Activity) {
         onGet : ((Project) -> Unit)={}
     ){
 
-        val urlT = "https://api.scratch.mit.edu/users/$user/favorites?limit=20&offset=${offset}"
+        val urlT = "https://api.scratch.mit.edu/users/$user/favorites?limit=$limitGet&offset=${offset}"
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
+            resultF = it
             try {
                 Log.i("I URL", it)
                 if((it == "{}") or (it == "[]")){
@@ -361,6 +369,7 @@ class Search(private val activity : Activity) {
 
         val urlT = "https://api.scratch.mit.edu/projects/$id"
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
+            resultF = it
             try {
                 Log.i("I URL", it)
                 val item = JSONObject(it)
@@ -389,6 +398,7 @@ class Search(private val activity : Activity) {
 
         val urlT = "https://api.scratch.mit.edu/users/$id"
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
+            resultF = it
             try {
                 Log.i("I URL", it)
                 val item = JSONObject(it)
@@ -415,8 +425,9 @@ class Search(private val activity : Activity) {
     ){
 
 
-        val urlT = "https://api.scratch.mit.edu/users/${data.first}/projects/${data.second}?limit=20&offset=${offset}"
+        val urlT = "https://api.scratch.mit.edu/users/${data.first}/projects/${data.second}?limit=$limitGet&offset=${offset}"
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
+            resultF = it
             try {
                 Log.i("I URL", it)
                 if((it == "{}") or (it == "[]")){

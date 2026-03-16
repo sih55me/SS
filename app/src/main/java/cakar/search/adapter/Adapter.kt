@@ -23,7 +23,8 @@ import cakar.search.ProjectActivity
 import cakar.search.R
 import cakar.search.databinding.ItemBinding
 import cakar.search.databinding.PinfoBinding
-import com.bumptech.glide.Glide
+
+import com.squareup.picasso.Picasso
 
 class Adapter(
     private val activity: Activity,
@@ -58,8 +59,8 @@ class Adapter(
         val itemdata = data[position]
         binding.title.text = itemdata.title
         binding.count.text = itemdata.creator
-        Glide.with(activity)
-            .load(itemdata.thumb).centerCrop()
+        Picasso.get()
+            .load(itemdata.thumb)
             .error(R.drawable.ic_launcher_background)
             .into(binding.thumbnail)
         binding.root.setOnClickListener{

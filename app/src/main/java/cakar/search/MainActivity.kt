@@ -1,6 +1,6 @@
 package cakar.search
 
-import android.app.Activity
+
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
@@ -17,18 +17,18 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import androidx.appcompat.widget.SearchView
+import android.widget.SearchView
 import android.widget.Toast
 import android.window.BackEvent
 import android.window.OnBackAnimationCallback
 import android.window.OnBackInvokedCallback
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
+import android.widget.Toolbar
 import cakar.search.adapter.Adapter
 import cakar.search.databinding.ActivityMainBinding
 import cakar.search.filetype.Project
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : Activity() {
 
     private val adap by lazy{ Adapter(this, arrayListOf()) }
     private lateinit var binding: ActivityMainBinding
@@ -60,8 +60,8 @@ class MainActivity : AppCompatActivity() {
                     id.hint = "Enter project id"
                     id.maxLines = 1
                     id.inputType = EditorInfo.TYPE_CLASS_NUMBER
-                    MaterialAlertDialogBuilder(this).apply {
-                        setTitle("Enter manualy")
+                    AlertDialog.Builder(this).apply {
+                        setTitle("Enter project id manually")
                         setView(id)
                         setPositiveButton("Go") { _, _ ->
                             try{
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                     id.hint = "Enter username"
                     id.maxLines = 1
                     id.isSingleLine = true
-                    MaterialAlertDialogBuilder(this).apply {
+                    AlertDialog.Builder(this).apply {
                         setTitle("Enter username to visit")
                         setView(id)
                         setPositiveButton("Visit") { _, _ ->
@@ -175,6 +175,7 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
+
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.findItem(R.id.app_bar_search)?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener{

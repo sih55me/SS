@@ -13,7 +13,7 @@
         <ImageView
             android:id="@+id/thumbnail"
             android:minWidth="95dp"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_marginStart="3dp"
             android:layout_height="70dp" />
 

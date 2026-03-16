@@ -1,56 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="960px"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ProjectActivity">
-    <LinearLayout
-        android:background="@android:drawable/toast_frame"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_margin="5dp"
-        android:backgroundTint="?android:colorAccent"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/close"
-            android:tint="?android:textColorPrimaryInverse"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/close"/>
-
-        <Button
-            android:textColor="?android:textColorPrimaryInverse"
-            android:id="@+id/drag"
-            android:background="@null"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Project" />
-        <ImageButton
-            android:id="@+id/more"
-            android:tint="?android:textColorPrimaryInverse"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:layout_width="35dp"
-            android:rotation="-90"
-            android:layout_height="match_parent"
-            android:src="@drawable/back_nav"/>
-
-
-    </LinearLayout>
     <WebView
         android:id="@+id/main"
         android:isScrollContainer="false"
-        android:layout_width="960px"
-        android:layout_height="820px" />
-    <View
-        android:layout_width="wrap_content"
-        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <com.linroid.filtermenu.library.FilterMenuLayout
+        android:layout_width="match_parent"
         android:id="@+id/menu"
-        android:layout_height="wrap_content"/>
+        android:elevation="8dp"
+        app:fm_expandedRadius="96dp"
+        app:fm_collapsedRadius="27dp"
+        app:fm_centerBottom="50dp"
+        app:fm_centerRight="50dp"
+        app:fm_primaryColor="?android:colorAccent"
+        app:fm_primaryDarkColor="?android:colorPressedHighlight"
+        android:layout_height="match_parent"/>
 
 
 
@@ -59,4 +30,4 @@
 
 
 
-</LinearLayout>
+</FrameLayout>

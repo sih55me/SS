@@ -28,6 +28,7 @@ import android.widget.TextView
 import android.widget.Toast
 import cakar.search.databinding.ActivityProjectBinding
 import cakar.search.filetype.Project
+import com.linroid.filtermenu.library.FilterMenu
 
 
 class ProjectActivity : Activity() {
@@ -36,7 +37,6 @@ class ProjectActivity : Activity() {
     var isMinimize = false
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setWindowAnimations(android.R.style.Animation_Activity)
-        setupFloatingWindowMovement()
         window?.setDimAmount(0F)
         window.requestFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
@@ -49,16 +49,37 @@ class ProjectActivity : Activity() {
         }else{
             actionBar?.setDisplayHomeAsUpEnabled(true)
         }
-        bin.close.setOnClickListener {
-            finish()
-        }
 
-        bin.menu.setOnCreateContextMenuListener { menu, _, _ ->
-            makeMenu(menu)
-        }
-        bin.more.setOnClickListener {
-            bin.menu.showContextMenu()
-        }
+        val menu =  FilterMenu.Builder(this)
+            .addItem(R.drawable.keyboard)
+            .addItem(R.drawable.refresh)
+            .addItem(R.drawable.tab_close)
+            .attach(bin.menu)
+            .withListener(object: FilterMenu.OnMenuChangeListener {
+                override fun onMenuItemClick(p0: View?, p1: Int) {
+                    when(p1){
+                        0->{
+                            showDialog(0)
+                        }
+                        1-> {
+                            bin.main.reload()
+                        }
+                        2 ->{
+                            finish()
+                        }
+                    }
+                }
+
+                override fun onMenuCollapse() {
+
+                }
+
+                override fun onMenuExpand() {
+
+                }
+
+            })
+            .build();
         bin.main.apply{
             settings.javaScriptEnabled = true
             webChromeClient = object:WebChromeClient(){
@@ -159,34 +180,7 @@ class ProjectActivity : Activity() {
         val p = intent?.getIntExtra("project", 0)
         bin.main.loadUrl("https://turbowarp.org/$p/embed?settings-button&addons=pause,remove-curved-stage-border,mute-project")
     }
-    private fun setupFloatingWindowMovement() {
-        var initialX = 0.0
-        var initialY = 0.0
-        var initialTouchX = 0.0
-        var initialTouchY = 0.0
 
-        // Set a touch listener to detect dragging
-        bin.drag.setOnTouchListener({ view, event ->
-            when (event.getAction()) {
-                MotionEvent.ACTION_DOWN -> {
-                    // Record the initial position and touch points when the touch starts
-                    initialX = window!!.attributes.x.toDouble()
-                    initialY = window!!.attributes.y.toDouble()
-                    initialTouchX = event.getRawX().toDouble()
-                    initialTouchY = event.getRawY().toDouble()
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-                    // Calculate the new position of the window based on the movement of the touch
-                    window!!.attributes.x = ((initialX + event.getRawX()) - initialTouchX).toInt()
-                    window!!.attributes.y = ((initialY + event.getRawY()) - initialTouchY).toInt()
-                    // Update the layout
-                    window!!.windowManager.updateViewLayout(window!!.decorView, window!!.attributes)
-                }
-            }
-            false
-        })
-    }
 
 
 

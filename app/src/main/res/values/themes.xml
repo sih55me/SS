@@ -1,25 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SS" parent="Theme.MaterialComponents.Light">
+    <style name="Theme.SS" parent="">
         <!-- Primary brand color. -->
-        <item name="android:colorAccent">@color/teal_200</item>
-        <item name="isMaterialTheme">true</item>
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="android:statusBarColor">@color/purple_200</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="colorPrimaryVariant">@color/teal_700</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="colorSurfaceContainer">@color/purple_200</item>
         <item name="android:actionModeWebSearchDrawable">@drawable/ic_search_black_24dp</item>
         <item name="android:homeAsUpIndicator">@drawable/prev</item>
-        <item name="android:actionOverflowButtonStyle">@style/Theme.SS.OverflowMenu</item>
         <item name="android:searchViewStyle">@style/SSs</item>
         <!-- Customize your theme here. -->
     </style>
 
     <style name="Theme.SS.ProPre" parent="Theme.SS">
-        <item name="android:statusBarColor">?android:colorBackground</item>
-        <item name="colorPrimary">?android:colorBackground</item>
+
     </style>
 
     <style name="Theme.SS.Pro" parent="Theme.SS">
@@ -29,22 +19,46 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowOverscan">true</item>
         <item name="android:immersive">true</item>
-        <item name="android:windowActionBar">true</item>
+        <item name="android:windowNoTitle">true</item>
         <!-- Indicate that the window is translucent -->
         <!-- Optional: set status and navigation bars to transparent for a full-screen effect -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <!-- Customize your theme here. -->
     </style>
-    <style name="SSs" parent="android:Widget.Material.Light.SearchView">
+    <style name="WTheme.SS.AM" parent="android:Widget.Material">
+        <item name="android:actionOverflowMenuStyle">@style/WTheme.SS.OverflowMenu</item>
+        <item name="android:actionButtonStyle">@style/WTheme.SS.AC</item>
+        <item name="android:popupTheme">@style/WTheme.SS.Pop</item>
+    </style>
+    <style name="WTheme.SS.Pop" parent="android:Widget.Material.PopupMenu">
+        <item name="android:popupAnimationStyle">@null</item>
+        <item name="android:popupEnterTransition">@android:transition/slide_bottom</item>
+        <item name="android:popupExitTransition">@android:transition/slide_bottom</item>
+        <item name="android:popupBackground">@android:drawable/toast_frame</item>
+    </style>
+    <style name="Theme.SS.PP" parent="Theme.SS">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowSwipeToDismiss">true</item>
+        <item name="android:windowBlurBehindRadius">20dp</item>
+        <item name="android:windowBlurBehindEnabled">true</item>
+    </style>
+    <style name="SSs" parent="android:Widget.Material.SearchView">
         <item name="android:closeIcon">@drawable/close</item>
         <item name="android:searchIcon">@drawable/ic_search_black_24dp</item>
         <item name="android:goIcon">@drawable/next</item>
     </style>
     <style name="Theme.C" parent="Theme.SS"/>
+    <style name="WTheme.SS.AC" parent="android:Widget.Material.Light.Button.Borderless">
 
+        <item name="android:minWidth">50dp</item>
+        <item name="android:minHeight">50dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:maxLines">2</item>
+    </style>
 
-    <style name="Theme.SS.OverflowMenu" parent="Widget.AppCompat.Light.ActionButton">
+    <style name="WTheme.SS.OverflowMenu" parent="WTheme.SS.AC">
         <item name="android:src">@drawable/more</item>
     </style>
 

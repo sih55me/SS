@@ -10,7 +10,7 @@
     <ListView
         android:layout_width="match_parent"
         android:id="@+id/list"
-        android:layout_weight="1"
+        android:layout_weight="0.5"
         android:layout_height="match_parent">
 
     </ListView>
@@ -19,8 +19,9 @@
         android:id="@+id/loa"
         style="?android:windowTitleStyle"
         android:layout_width="match_parent"
-        android:layout_height="700dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:singleLine="false"
         android:gravity="center"
         android:text="Plz wait bozo..."
         android:textAlignment="center"
@@ -30,7 +31,6 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:padding="5dp"
         android:background="?android:colorBackground"
         android:elevation="15dp"
         android:orientation="vertical"
@@ -38,7 +38,7 @@
         <cakar.search.CP
             android:layout_width="match_parent"
             android:id="@+id/pr"
-            android:max="20"
+            android:max="10"
             android:indeterminate="true"
             android:visibility="visible"
             style="?android:progressBarStyleHorizontal"
@@ -54,9 +54,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/prev"
-                style="?materialButtonOutlinedStyle"
+                style="?android:buttonBarButtonStyle"
                 android:layout_margin="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,8 +64,9 @@
 
 
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/next"
+                style="?android:buttonBarButtonStyle"
                 android:layout_margin="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -28,11 +28,12 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
 import cakar.search.databinding.PinfoBinding
 import cakar.search.filetype.Project
+import cakar.search.filetype.Studia
 
 import com.squareup.picasso.Picasso
 
-class InfoProDialog()  : DialogFragment(){
-    var itemdata : Project? = null
+class InfoStuDialog()  : DialogFragment(){
+    var itemdata : Studia? = null
     private set
     private var isTabReady = false
 
@@ -74,28 +75,28 @@ class InfoProDialog()  : DialogFragment(){
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         dialog?.setTitle(null)
         super.onViewCreated(view, savedInstanceState)
-        if(savedInstanceState?.getParcelable<Project>("p") != null){
+        if(savedInstanceState?.getParcelable<Studia>("p") != null){
             itemdata = savedInstanceState?.getParcelable("p")
             setup()
             return
         }
-        if(arguments?.getParcelable<Project>("p") != null){
+        if(arguments?.getParcelable<Studia>("p") != null){
             itemdata = arguments?.getParcelable("p")
             setup()
             return
         }
-        if(arguments?.getInt("id") != null){
-            Search(activity).also{s->
-                s.onError = {
-                    notfound(s.reason)
-                }
-                s.getProject(arguments?.getInt("id") ?: 0) {
-                    itemdata = it
-                    setup()
-                }
-            }
-            return
-        }
+//        if(arguments?.getInt("id") != null){
+//            Search(activity).also{s->
+//                s.onError = {
+//                    notfound(s.reason)
+//                }
+//                s.ge(arguments?.getInt("id") ?: 0) {
+//                    itemdata = it
+//                    setup()
+//                }
+//            }
+//            return
+//        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -254,6 +255,7 @@ class InfoProDialog()  : DialogFragment(){
                 .placeholder(resources.getColor(android.R.color.background_dark).toDrawable())
                 .error(resources.getColor(android.R.color.holo_red_light).toDrawable())
                 .into(pb.thumbnail)
+
             pb.amenu.popupTheme = R.style.WTheme_SS_Pop
             pb.amenu.menu.also {menu->
                 fun Menu.opt(){

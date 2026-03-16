@@ -43,17 +43,8 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.volley)
-    implementation(libs.glide)
-    implementation(libs.androidx.activity)
-    implementation(libs.photoview)
-    implementation(libs.photoview.dialog)
+    implementation(libs.library)
+    implementation(libs.picasso)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }

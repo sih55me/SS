@@ -21,11 +21,14 @@
 
 
             <TabWidget
-                android:elevation="3dp"
-                android:background="?android:colorBackground"
+                android:background="?android:windowBackground"
+                android:elevation="5dp"
                 android:id="@android:id/tabs"
+                android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_margin="10dp"
@@ -40,8 +43,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-                        <androidx.cardview.widget.CardView
-
+                        <FrameLayout
                             android:layout_marginBottom="10dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -57,7 +59,7 @@
                                 style="@android:style/Widget.ProgressBar"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
-                        </androidx.cardview.widget.CardView>
+                        </FrameLayout>
 
                         <TextView
                             android:id="@+id/title"
@@ -106,17 +108,16 @@
                             android:layout_width="match_parent"
                             tools:text="User"
                             android:id="@+id/crea"
-                            android:drawableTint="?android:colorControlNormal"
+                            style="?android:buttonBarButtonStyle"
+                            android:textSize="20sp"
                             android:drawableEnd="@drawable/next"
-                            android:background="?android:selectableItemBackground"
-                            style="?android:textAppearanceLarge"
                             android:gravity="center_vertical"
                             android:layout_height="56dp"/>
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:background="?android:attr/listDivider" />
-                        <androidx.cardview.widget.CardView
+                        <FrameLayout
                             android:layout_marginTop="10dp"
                             android:id="@+id/remix_lay"
                             android:layout_marginBottom="15dp"
@@ -144,10 +145,7 @@
                                     android:layout_width="match_parent"
                                     android:text="Original version"
                                     android:id="@+id/ori"
-                                    style="?android:buttonBarPositiveButtonStyle"
-                                    android:drawablePadding="10dp"
-                                    android:drawableTint="?android:colorControlNormal"
-                                    android:drawableStart="@android:drawable/stat_notify_sync_noanim"
+
                                     android:enabled="false"
                                     android:gravity="center_vertical"
                                     android:layout_height="wrap_content"/>
@@ -155,15 +153,11 @@
                                     android:layout_width="match_parent"
                                     android:text="Original-Remix version"
                                     android:id="@+id/orire"
-                                    style="?android:buttonBarNegativeButtonStyle"
                                     android:enabled="false"
-                                    android:drawablePadding="10dp"
-                                    android:drawableTint="?android:colorControlNormal"
-                                    android:drawableStart="@android:drawable/stat_notify_sync_noanim"
                                     android:gravity="center_vertical"
                                     android:layout_height="wrap_content"/>
                             </LinearLayout>
-                        </androidx.cardview.widget.CardView>
+                        </FrameLayout>
 
 
 
@@ -191,5 +185,11 @@
 
         </LinearLayout>
     </TabHost>
+    <ActionMenuView
+        android:layout_width="match_parent"
+        android:id="@+id/amenu"
+        android:background="?android:windowBackground"
+        android:elevation="5dp"
+        android:layout_height="50dp"/>
 
 </LinearLayout>

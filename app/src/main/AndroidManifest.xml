@@ -16,7 +16,6 @@
         android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".ProjectActivity"
-            android:theme="@style/Theme.SS.Pro"
             android:enableOnBackInvokedCallback="false"
             android:supportsPictureInPicture="true"
             android:allowEmbedded="true"
@@ -27,6 +26,11 @@
             android:exported="false" />
         <activity
             android:name=".PP"
+
+            android:exported="false"/>
+        <activity
+            android:name=".Settings"
+
             android:exported="false"/>
 
         <activity android:name=".Result"
