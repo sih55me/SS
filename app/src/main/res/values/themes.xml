@@ -1,15 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SS" parent="">
-        <!-- Primary brand color. -->
-        <item name="android:actionModeWebSearchDrawable">@drawable/ic_search_black_24dp</item>
-        <item name="android:homeAsUpIndicator">@drawable/prev</item>
-        <item name="android:searchViewStyle">@style/SSs</item>
+    <style name="Theme.SS" parent="android:Theme.DeviceDefault.Settings">
+        <item name="android:actionModeWebSearchDrawable">@drawable/search</item>
+        <item name="android:windowBackground">@drawable/popup</item>
+        <item name="android:actionOverflowButtonStyle">@style/WTheme.SS.OverflowMenu</item>
         <!-- Customize your theme here. -->
+
     </style>
 
-    <style name="Theme.SS.ProPre" parent="Theme.SS">
 
+
+
+
+    <style name="Theme.SS.ProPre" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="android:windowBackground">@drawable/popup</item>
+        <item name="android:colorControlNormal">#8c8d8e</item>
+        <item name="android:windowSwipeToDismiss">true</item>
     </style>
 
     <style name="Theme.SS.Pro" parent="Theme.SS">
@@ -45,7 +54,8 @@
     </style>
     <style name="SSs" parent="android:Widget.Material.SearchView">
         <item name="android:closeIcon">@drawable/close</item>
-        <item name="android:searchIcon">@drawable/ic_search_black_24dp</item>
+        <item name="android:searchIcon">@drawable/search</item>
+        <item name="android:commitIcon">@drawable/next</item>
         <item name="android:goIcon">@drawable/next</item>
     </style>
     <style name="Theme.C" parent="Theme.SS"/>
@@ -58,7 +68,7 @@
         <item name="android:maxLines">2</item>
     </style>
 
-    <style name="WTheme.SS.OverflowMenu" parent="WTheme.SS.AC">
+    <style name="WTheme.SS.OverflowMenu" parent="android:Widget.Material.ActionButton.Overflow">
         <item name="android:src">@drawable/more</item>
     </style>
 

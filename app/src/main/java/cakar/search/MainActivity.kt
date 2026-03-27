@@ -11,27 +11,26 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.SearchView
 import android.widget.Toast
-import android.window.BackEvent
-import android.window.OnBackAnimationCallback
 import android.window.OnBackInvokedCallback
 import android.app.Activity
-import android.widget.Toolbar
+import android.app.SearchManager
+import android.content.Context
+import android.net.Uri
+import android.provider.SearchRecentSuggestions
 import cakar.search.adapter.Adapter
 import cakar.search.databinding.ActivityMainBinding
 import cakar.search.filetype.Project
+import cakar.search.ste.Settings
 
 class MainActivity : Activity() {
 
     private val adap by lazy{ Adapter(this, arrayListOf()) }
     private lateinit var binding: ActivityMainBinding
+    val sm by lazy { getSystemService(Context.SEARCH_SERVICE) as SearchManager }
 
     protected var q = ""
 
@@ -53,8 +52,12 @@ class MainActivity : Activity() {
 
 
     companion object{
+
         fun Activity.handleMainMenu(item: MenuItem){
             when(item.itemId){
+                R.id.set ->{
+                    startActivity(Intent(this, Settings::class.java))
+                }
                 R.id.emp -> {
                     val id = EditText(this)
                     id.hint = "Enter project id"
@@ -126,8 +129,13 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTitle("Rumah")
+        val suggestions = SearchRecentSuggestions(
+            this,
+            SearchProvider.AUTHORITY, SearchProvider.MODE
+        )
+
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+//        setContentView(binding.root)
         e(resources.configuration)
         binding.list.apply{
             val s = Point()
@@ -149,6 +157,9 @@ class MainActivity : Activity() {
             if(e.isShowing){
                 e.dismiss()
             }
+        }
+        binding.button.setOnClickListener {
+
         }
         if(savedInstanceState != null){
             val l = savedInstanceState.getParcelableArrayList<Project>("data")
@@ -200,6 +211,8 @@ class MainActivity : Activity() {
                 }
                 item.actionView?.let {
                     if(it is SearchView){
+                        val si = sm.getSearchableInfo(componentName)
+                        it.setSearchableInfo(si)
                         it.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                             override fun onQueryTextSubmit(query: String): Boolean {
                                 fun d(){

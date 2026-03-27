@@ -5,45 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TabHost
+    <GridView
+        android:id="@+id/tabpro"
+        android:visibility="invisible"
         android:layout_width="match_parent"
-        android:id="@+id/tbh"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    </GridView>
 
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+    <GridView
+        android:id="@+id/tabstu"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <GridView
-                    android:id="@+id/tabpro"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                </GridView>
-
-                <GridView
-                    android:id="@+id/tabstu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                </GridView>
-
-            </FrameLayout>
-        </LinearLayout>
-    </TabHost>
+    </GridView>
 
 
 </LinearLayout>

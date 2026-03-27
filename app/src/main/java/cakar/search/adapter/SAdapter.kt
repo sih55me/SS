@@ -30,7 +30,7 @@ import com.squareup.picasso.Picasso
 class SAdapter(
     private val activity: Activity,
     val data : ArrayList<Studia>,
-    val mini: Boolean = false
+    var mini: Boolean = false
 ): BaseAdapter() {
 
     override fun getCount(): Int = data.size

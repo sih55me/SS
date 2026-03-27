@@ -24,6 +24,7 @@ import android.app.DialogFragment
 import android.app.Fragment
 import android.os.Build
 import android.os.Handler
+import android.text.SpannableStringBuilder
 import android.transition.Explode
 import android.transition.Fade
 import android.util.Log
@@ -89,6 +90,7 @@ class PP: Activity() {
             outState.also {
                 it.putParcelableArrayList("l", l)
             }
+            super.onSaveInstanceState(outState)
         }
 
 
@@ -164,6 +166,7 @@ class PP: Activity() {
             outState.also {
                 it.putParcelableArrayList("l", l)
             }
+            super.onSaveInstanceState(outState)
         }
 
         override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -240,6 +243,7 @@ class PP: Activity() {
             outState.also {
                 it.putParcelableArrayList("l", d.data)
             }
+            super.onSaveInstanceState(outState)
         }
 
         override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -304,6 +308,7 @@ class PP: Activity() {
             outState.also {
                 it.putParcelableArrayList("l", d.data)
             }
+            super.onSaveInstanceState(outState)
         }
 
         override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -358,7 +363,7 @@ class PP: Activity() {
     }
     open class Listo(): DialogFragment(){
 
-        var u = ""
+        var u : String= ""
         val sm by lazy{
             Search(activity)
         }
@@ -370,7 +375,9 @@ class PP: Activity() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
         ): View? {
-          return (hb.root)
+
+            if (hb.root.getParent() != null) { (( hb.root).getParent() as ViewGroup).removeView(hb.root); }
+            return (hb.root)
         }
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
@@ -405,7 +412,11 @@ class PP: Activity() {
 
         override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
-            if(isHidden)return
+            u = (savedInstanceState?.getCharSequence("usr", u)?.toString()?:u).also {
+                if(it.isNullOrEmpty()){
+                    Toast.makeText(activity, "no user\n$it", Toast.LENGTH_SHORT).show()
+                }
+            }
             ofs = (savedInstanceState?.getInt("ofs")?:0).also {
                 hb.pr.isIndeterminate = false
                 hb.pr.progress = it
@@ -424,7 +435,9 @@ class PP: Activity() {
         var ofs = 0
 
         override fun onSaveInstanceState(outState: Bundle) {
+            val `in` = SpannableStringBuilder(u)
             outState.also {
+                it.putCharSequence("usr", `in`)
                 it.putInt("ofs", ofs)
             }
         }
@@ -478,12 +491,11 @@ class PP: Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        this.setContentView(bin.root)
         lay(resources.configuration)
-
         actionBar?.setDisplayShowTitleEnabled(false)
         actionBar?.setDisplayHomeAsUpEnabled(true)
-        val s = Point()
+
         val se = Search(this)
         val e = ProgressDialog(this)
         e.apply{
@@ -601,7 +613,6 @@ class PP: Activity() {
 
         }
 
-        actionBar?.navigationMode = ActionBar.NAVIGATION_MODE_TABS;
 
 
 
@@ -626,119 +637,35 @@ class PP: Activity() {
             s()
         }
 
-        val trans = fragmentManager.beginTransaction()
 
-        trans.apply{
-            if(savedInstanceState == null){
-                //onCreate
-
-                add(android.R.id.content, HisProjects().also { it.u = u }, "sp")
-                add(android.R.id.content, HisFProjects().also { it.u = u }, "fp")
-
-
-            }
-        }
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            trans.commitNowAllowingStateLoss()
-        }else{
-            trans.commitAllowingStateLoss()
-        }
-        Handler(mainLooper).postDelayed({
-
-            changePage(openPage)
-        },100L)
-        val r = Runnable{
-            actionBar?.apply {
-                val s = Point()
-                windowManager.defaultDisplay.getSize(s)
-                setDisplayShowTitleEnabled(s.x < s.y)
-                navigationMode = ActionBar.NAVIGATION_MODE_TABS
-                addTab(addTab("Projects" , 0))
-                addTab(addTab("Favorite Projects", 1))
-
-
-                Runnable{
-                    if (savedInstanceState != null) {
-                        setSelectedNavigationItem(savedInstanceState.getInt("page"))
-                    }
-                }.also {
-                    Handler(mainLooper).postDelayed(it, 10L)
-                }
-
-            }
-        }
-        Handler(mainLooper).postDelayed(r, 200L)
 
     }
 
 
 
-    private fun addTab(text: String, i: Int): ActionBar.Tab? {
-        return actionBar?.newTab()?.setText(text)?.setTag(i)?.setTabListener(TabAction{_,f->
-            changePage(i)
-        })
-    }
-
-    private fun changePage(openPage: Int) {
-        val l = listOf("sp","fp",)
-        val d = fragmentManager.beginTransaction()
-        d.setReorderingAllowed(true)
-        for(i in l){
-            if(l.indexOf(i) == openPage) {
-                d.show(fragmentManager.findFragmentByTag(i))
-                this.openPage = l.indexOf(i)
-            }else{
-                d.hide(fragmentManager.findFragmentByTag(i))
-            }
-
-        }
-        d.commitAllowingStateLoss()
-    }
 
 
-    override fun onCreateDialog(id: Int): Dialog? {
-        if(id == 0){
-            return object : Dialog(this, R.style.Theme_SS_ProPre){
-                init {
-                    window!!.setWindowAnimations(android.R.style.Animation_InputMethod)
-                    window!!.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-                    window!!.setDimAmount(0.4F)
-                    setCanceledOnTouchOutside(true)
-                    when(resources.configuration.orientation){
-                        Configuration.ORIENTATION_LANDSCAPE -> {
-                            window!!.setLayout(window!!.windowManager.defaultDisplay.width/2, window!!.windowManager.defaultDisplay.height)
-                            window!!.setGravity(Gravity.END)
-                        }
-                        Configuration.ORIENTATION_PORTRAIT -> {
-                            window!!.setLayout(window!!.windowManager.defaultDisplay.width, (window!!.windowManager.defaultDisplay.height/1.2).toInt())
-                            window!!.setGravity(Gravity.BOTTOM)
-                        }
-                    }
-                    if(bin.root.parent != null){
-                        (bin.root.parent as ViewGroup).removeView(bin.root)
-                    }
-                    this.setContentView(bin.root)
-                    this.setTitle("About")
-
-                }
-                override fun onCreateOptionsMenu(menu: Menu): Boolean {
-                    menu.add("Close").setIcon(R.drawable.close).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setOnMenuItemClickListener {
-                        dismiss()
-                        true
-                    }
-                    return super.onCreateOptionsMenu(menu)
-                }
-            }
-        }
-        return super.onCreateDialog(id)
-    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menu?.add("Info")?.setOnMenuItemClickListener {
-            showDialog(0)
+        menu?.add("Shared project")?.setOnMenuItemClickListener {
+            if(!::p.isInitialized) {
+                Toast.makeText(this, "User not loaded!\nId:${intent.getStringExtra("user")}", Toast.LENGTH_SHORT).show()
+                return@setOnMenuItemClickListener true
+            }
+            HisProjects().also {
+                it.u = p.title
+            }.show(fragmentManager, "sp")
+            true
+        }
+        menu?.add("Favorite project")?.setOnMenuItemClickListener {
+            if(!::p.isInitialized) {
+                Toast.makeText(this, "User not loaded!\nId:${intent.getStringExtra("user")}", Toast.LENGTH_SHORT).show()
+                return@setOnMenuItemClickListener true
+            }
+            HisFProjects().also {
+                it.u = p.title
+            }.show(fragmentManager, "fp")
             true
         }
         menu?.add("Followers")?.setOnMenuItemClickListener {
@@ -759,6 +686,10 @@ class PP: Activity() {
             HisFlwi().also {
                 it.u = p.title
             }.show(fragmentManager, "flwi")
+            true
+        }
+        menu?.add("Search")?.setOnMenuItemClickListener {
+            onSearchRequested()
             true
         }
         menu?.add("Share")?.setIcon(R.drawable.share)?.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)?.setOnMenuItemClickListener {
@@ -786,7 +717,6 @@ class PP: Activity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt("page",openPage)
         if(::p.isInitialized){
             outState.putParcelable("p", p)
         }

@@ -2,17 +2,19 @@ package cakar.search
 
 import android.app.ActionBar
 import android.app.Activity
+import android.app.FragmentTransaction
 import android.app.ProgressDialog
+import android.app.SearchManager
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.SearchRecentSuggestions
 import android.view.Menu
 import android.view.MenuItem
-import android.view.WindowManager
-import android.widget.ArrayAdapter
+import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import android.window.OnBackInvokedCallback
@@ -23,11 +25,25 @@ import cakar.search.databinding.ResultBinding
 import cakar.search.filetype.Project
 import cakar.search.filetype.Studia
 
+
 class Result : Activity() {
+
+    /**
+
+    typelist
+
+    0 = normal
+
+    -1 = mini
+     */
+    private var typeList = 0
 
     private val padap by lazy{ Adapter(this, arrayListOf()) }
     private val sadap by lazy{ SAdapter(this, arrayListOf()) }
     private lateinit var binding: ResultBinding
+
+
+
 
     protected var q = ""
 
@@ -70,7 +86,16 @@ class Result : Activity() {
         super.onCreate(savedInstanceState)
         binding = ResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         query = intent.getStringExtra("q").orEmpty()
+        if (Intent.ACTION_SEARCH == intent.getAction()) {
+            query = intent.getStringExtra(SearchManager.QUERY)?:query
+        }
+        val suggestions = SearchRecentSuggestions(
+            this,
+            SearchProvider.AUTHORITY, SearchProvider.MODE
+        )
+        suggestions.saveRecentQuery(query, null)
         l()
         val se = Search(this@Result)
         val e = ProgressDialog(this@Result)
@@ -97,7 +122,6 @@ class Result : Activity() {
                 se.cancelAll()
             }
             setCanceledOnTouchOutside(false)
-            window!!.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL)
             window!!.setDimAmount(0F)
         }
         skipTo = intent.getIntExtra("skipTo", 0)
@@ -109,7 +133,7 @@ class Result : Activity() {
                 se.searchProject(
                     query, offset = skipTo
                 ) {
-                    if (e.isShowing and (sadap.data.isNotEmpty())) {
+                    if (e.isShowing) {
                         e.dismiss()
                     }
                     padap.setdata(it)
@@ -125,43 +149,84 @@ class Result : Activity() {
                 se.searchStudia(
                     query, offset = skipTo
                 ) {
-                    if (e.isShowing and(padap.data.isNotEmpty())) {
+                    if (e.isShowing) {
                         e.dismiss()
                     }
                     sadap.setdata(it)
                 }
             }
         }
-
-        sP()
-        pP()
+        val na = savedInstanceState?.getInt("nav",0)?:0
         if(actionBar != null){
-            actionBar?.setTitle("Result of ${query}")
+            if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+                actionBar?.setTitle("Result of ${query}")
+            }else{
+                actionBar?.setTitle(null)
+            }
             actionBar?.setDisplayHomeAsUpEnabled(true)
-        }
+            actionBar?.navigationMode = ActionBar.NAVIGATION_MODE_TABS
+            actionBar?.apply {
+                val o = object : ActionBar.TabListener{
 
-        binding.tbh.apply {
-            setup()
-            addTab(newTabSpec("pro").setIndicator("Project").setContent(R.id.tabpro))
-            addTab(newTabSpec("stu").setIndicator("Studio").setContent(R.id.tabstu))
-            setOnTabChangedListener {
-                if(it == "pro"){
-                    pP()
-                }else if(it == "stu"){
-                    sP()
+
+                    override fun onTabSelected(
+                        p0: ActionBar.Tab?,
+                        p1: FragmentTransaction?
+                    ) {
+                        if(p0 == null)return
+                        val it = p0.tag
+                        if(it == "pro"){
+                            binding.tabpro.visibility = View.VISIBLE
+                            pP()
+                        }else if(it == "stu"){
+                            binding.tabstu.visibility = View.VISIBLE
+                            sP()
+                        }
+                    }
+
+                    override fun onTabUnselected(
+                        p0: ActionBar.Tab?,
+                        p1: FragmentTransaction?
+                    ) {
+                        if(p0 == null)return
+                        val it = p0.tag
+                        if(it == "pro"){
+                            binding.tabpro.visibility = View.GONE
+
+                        }else if(it == "stu"){
+                            binding.tabstu.visibility = View.GONE
+                        }
+                    }
+
+                    override fun onTabReselected(
+                        p0: ActionBar.Tab?,
+                        p1: FragmentTransaction?
+                    ) {
+
+                    }
                 }
+                addTab(newTab().setTag("pro").setText("Project").setTabListener(o))
+                addTab(newTab().setTag("stu").setText("Studio").setTabListener(o))
+                setSelectedNavigationItem(na)
+
             }
         }
+
+
+
+
 
 
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
+        menu.add(0, 'm'.code,0,"Mini mode").setCheckable(true).setChecked(typeList == -1)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem('m'.code)?.setChecked(typeList == -1)
         menu?.findItem(R.id.app_bar_search)?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener{
             var onBack = Any()
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
@@ -187,7 +252,8 @@ class Result : Activity() {
                         Handler(mainLooper).postDelayed({
                             it.setQuery(query, false)
                         },600L)
-                        it.isSubmitButtonEnabled = true
+                        val si = (getSystemService(SEARCH_SERVICE) as SearchManager).getSearchableInfo(componentName)
+                        it.setSearchableInfo(si)
                         it.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                             override fun onQueryTextSubmit(query: String): Boolean {
                                 fun d(){
@@ -219,6 +285,24 @@ class Result : Activity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         handleMainMenu(item)
+        if(item.itemId == 'm'.code){
+            if(typeList == 0){
+                typeList = -1
+            }else{
+                typeList = 0
+            }
+            item.setChecked(typeList == -1)
+            sadap.mini = typeList == -1
+            padap.mini = typeList == -1
+            setVisible(false)
+            Runnable{
+                binding.tabstu.adapter = sadap
+                binding.tabpro.adapter = padap
+                setVisible(true)
+            }.let {
+                Handler(mainLooper).postDelayed(it,100L)
+            }
+        }
         if(item.itemId == android.R.id.home){
             finish()
         }
@@ -236,6 +320,7 @@ class Result : Activity() {
         outState.putParcelableArrayList("pdata", padap.data)
         outState.putParcelableArrayList("sdata", sadap.data)
         outState.putString("q", q)
+        outState.putInt("nav", actionBar?.selectedNavigationIndex?:0)
 
     }
 }

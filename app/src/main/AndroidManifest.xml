@@ -14,27 +14,44 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SS"
         android:enableOnBackInvokedCallback="true">
+        <provider android:name=".SearchProvider"
+            android:authorities="cakar.search.HistorySearchProvider" />
+
         <activity
             android:name=".ProjectActivity"
             android:enableOnBackInvokedCallback="false"
             android:supportsPictureInPicture="true"
             android:allowEmbedded="true"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTop"
             android:documentLaunchMode="intoExisting"
+            android:autoRemoveFromRecents="true"
+            android:launchMode="singleTop"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|keyboard"
-            android:exported="false" />
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".Result" />
+        </activity>
         <activity
             android:name=".PP"
-
-            android:exported="false"/>
+            android:exported="false">
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".Result" />
+        </activity>
         <activity
-            android:name=".Settings"
-
-            android:exported="false"/>
+            android:name=".ste.Settings"
+            android:label="Settings"
+            android:exported="false">
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/search" />
+        </activity>
 
         <activity android:name=".Result"
-            android:exported="false">
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
             <meta-data android:name="android.app.searchable"
                 android:resource="@xml/search" />
         </activity>
@@ -42,8 +59,9 @@
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:exported="true">
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/search" />
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".Result" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

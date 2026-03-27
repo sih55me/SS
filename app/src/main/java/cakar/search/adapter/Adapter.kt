@@ -29,7 +29,7 @@ import com.squareup.picasso.Picasso
 class Adapter(
     private val activity: Activity,
     val data : ArrayList<Project>,
-    val mini: Boolean = false
+    var mini: Boolean = false
 ): BaseAdapter() {
 
     override fun getCount(): Int = data.size

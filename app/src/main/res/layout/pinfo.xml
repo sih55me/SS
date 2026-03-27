@@ -49,14 +49,16 @@
                             android:layout_height="wrap_content">
                             <ImageView
                                 android:id="@+id/thumbnail"
-                                android:layout_width="match_parent"
-                                android:minHeight="210dp"
-                                tools:src="@color/design_default_color_error"
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:scaleType="fitCenter"
+                                android:minWidth="355dp"
+                                android:minHeight="266dp"
                                 android:layout_height="wrap_content"/>
                             <ProgressBar
                                 android:id="@+id/progress_circular"
                                 android:layout_gravity="center"
-                                style="@android:style/Widget.ProgressBar"
+                                style="?android:progressBarStyle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                         </FrameLayout>
@@ -185,11 +187,13 @@
 
         </LinearLayout>
     </TabHost>
+
     <ActionMenuView
-        android:layout_width="match_parent"
         android:id="@+id/amenu"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:background="?android:windowBackground"
         android:elevation="5dp"
-        android:layout_height="50dp"/>
+        android:visibility="gone" />
 
 </LinearLayout>

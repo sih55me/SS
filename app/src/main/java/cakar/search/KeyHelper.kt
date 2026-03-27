@@ -91,6 +91,12 @@ class KeyHelper(private val a: Context, val v : WebView) : Dialog(a, R.style.The
         setContentView(binding.root)
     }
 
+    override fun onStart() {
+        super.onStart()
+        if(ownerActivity != null){
+            window!!.decorView.systemUiVisibility = ownerActivity!!.window!!.decorView.systemUiVisibility
+        }
+    }
 
 
     @SuppressLint("RtlHardcoded")
@@ -102,6 +108,10 @@ class KeyHelper(private val a: Context, val v : WebView) : Dialog(a, R.style.The
         keyboard = Keyboard(a, R.xml.keyjs)
         keyboardView.keyboard = keyboard
         val morePopup = Dialog(a, R.style.Theme_SS_Pro)
+        if(ownerActivity != null){
+            window!!.decorView.systemUiVisibility = ownerActivity!!.window!!.decorView.systemUiVisibility
+            morePopup.window!!.decorView.systemUiVisibility = ownerActivity!!.window!!.decorView.systemUiVisibility
+        }
         morePopup.window!!.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         morePopup.requestWindowFeature(Window.FEATURE_NO_TITLE)
         morePopup.setContentView(setbin.root)

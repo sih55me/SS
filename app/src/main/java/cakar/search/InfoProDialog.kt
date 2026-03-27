@@ -22,6 +22,7 @@ import android.app.FragmentTransaction
 import android.transition.Explode
 import android.transition.Fade
 import android.transition.Transition
+import android.view.MenuInflater
 import android.view.Window
 import android.widget.ArrayAdapter
 import androidx.core.graphics.drawable.toDrawable
@@ -49,25 +50,127 @@ class InfoProDialog()  : DialogFragment(){
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
         return object : Dialog(context, R.style.Theme_SS_ProPre){
             init {
-                window!!.requestFeature(Window.FEATURE_NO_TITLE)
                 window!!.setWindowAnimations(android.R.style.Animation_InputMethod)
-                window!!.enterTransition = Explode()
-                window!!.exitTransition = Fade()
                 window!!.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
                 window!!.setDimAmount(0.4F)
                 setCanceledOnTouchOutside(true)
                 when(resources.configuration.orientation){
                     Configuration.ORIENTATION_LANDSCAPE -> {
-                        window!!.setLayout(window!!.windowManager.defaultDisplay.width/2, window!!.windowManager.defaultDisplay.height)
-                        window!!.setGravity(Gravity.END)
+                        window!!.setLayout(window!!.windowManager.defaultDisplay.width/2,
+                            (window!!.windowManager.defaultDisplay.height/1.12).toInt()
+                        )
+                        window?.setGravity(Gravity.CENTER)
                     }
 
                 }
 
             }
+
+            override fun onCreateOptionsMenu(menu: Menu): Boolean {
+                this@InfoProDialog.onCreateOptionsMenu(menu, MenuInflater(context))
+                return super.onCreateOptionsMenu(menu)
+            }
             override fun show() {
                 super.show()
+                actionBar?.setDisplayUseLogoEnabled(false)
+                actionBar?.setHomeButtonEnabled(false)
+                actionBar?.elevation = 0f
             }
+        }
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        if (menu == null)return
+        fun Menu.opt(){
+            apply {
+                add("Share")
+                    ?.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                    ?.setOnMenuItemClickListener {
+                        try {
+                            val i = Intent(Intent.ACTION_SEND)
+                            i.type = "text/plain"
+                            i.putExtra(
+                                Intent.EXTRA_TEXT,
+                                "https://scratch.mit.edu/projects/${itemdata!!.id}/"
+                            )
+                            activity.startActivity(
+                                Intent.createChooser(
+                                    i,
+                                    "share"
+                                )
+                            )
+                            true
+                        } catch (_: Exception) {
+                            Toast.makeText(
+                                activity,
+                                "Project unload!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            false
+                        }
+                    }
+                add("Learn more").setOnMenuItemClickListener {
+                    try {
+                        val i = Intent(
+                            Intent.ACTION_VIEW,
+                            "https://scratch.mit.edu/projects/${itemdata!!?.id}/".toUri()
+                        )
+                        activity.startActivity(
+                            Intent.createChooser(
+                                i,
+                                "share"
+                            )
+                        )
+                        true
+                    } catch (_: Exception) {
+                        Toast.makeText(
+                            activity,
+                            "Project unload!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        false
+                    }
+                    true
+                }
+                add("Status").setOnMenuItemClickListener {
+                    Builder(activity).setTitle("Status")
+                        .setMessage(
+                            "Visibility : ${itemdata!!.uninfo["visibility"]}\nIs Public : ${itemdata!!.uninfo["public"]}\n Publish : ${
+                                itemdata?.uninfo?.get(
+                                    "posted"
+                                )
+                            }"
+                        )
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create().also {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                it!!.window?.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+                                it!!.window?.attributes?.blurBehindRadius = 5
+                            }
+                        }.show()
+                    true
+                }
+            }
+        }
+        menu.add(0,0,2,"Close").setIcon(R.drawable.close).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(itemdata != null).setOnMenuItemClickListener {
+            this@InfoProDialog.dismiss()
+            true
+        }
+        menu.addSubMenu(0,0,1,"Options").also {mo->
+            mo.item.setIcon(R.drawable.more).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+            if (itemdata != null) {
+                mo.opt()
+            } else {
+                mo.add("Unavailable")
+            }
+        }
+        menu.add(0,0,0,"Play").setIcon(R.drawable.play).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(itemdata != null).setOnMenuItemClickListener {
+            val i = Intent(activity, ProjectActivity::class.java)
+            i.putExtra("project", itemdata!!.id)
+            activity.startActivity(i)
+            true
         }
     }
 
@@ -254,95 +357,20 @@ class InfoProDialog()  : DialogFragment(){
                 .placeholder(resources.getColor(android.R.color.background_dark).toDrawable())
                 .error(resources.getColor(android.R.color.holo_red_light).toDrawable())
                 .into(pb.thumbnail)
-            pb.amenu.popupTheme = R.style.WTheme_SS_Pop
-            pb.amenu.menu.also {menu->
-                fun Menu.opt(){
-                    apply {
-                        add("Share")
-                            ?.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                            ?.setOnMenuItemClickListener {
-                                try {
-                                    val i = Intent(Intent.ACTION_SEND)
-                                    i.type = "text/plain"
-                                    i.putExtra(
-                                        Intent.EXTRA_TEXT,
-                                        "https://scratch.mit.edu/projects/${itemdata!!.id}/"
-                                    )
-                                    activity.startActivity(
-                                        Intent.createChooser(
-                                            i,
-                                            "share"
-                                        )
-                                    )
-                                    true
-                                } catch (_: Exception) {
-                                    Toast.makeText(
-                                        activity,
-                                        "Project unload!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    false
-                                }
-                            }
-                        add("Learn more").setOnMenuItemClickListener {
-                            try {
-                                val i = Intent(
-                                    Intent.ACTION_VIEW,
-                                    "https://scratch.mit.edu/projects/${itemdata!!?.id}/".toUri()
-                                )
-                                activity.startActivity(
-                                    Intent.createChooser(
-                                        i,
-                                        "share"
-                                    )
-                                )
-                                true
-                            } catch (_: Exception) {
-                                Toast.makeText(
-                                    activity,
-                                    "Project unload!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                false
-                            }
-                            true
-                        }
-                        add("Status").setOnMenuItemClickListener {
-                            Builder(activity).setTitle("Status")
-                                .setMessage(
-                                    "Visibility : ${itemdata!!.uninfo["visibility"]}\nIs Public : ${itemdata!!.uninfo["public"]}\n Publish : ${
-                                        itemdata?.uninfo?.get(
-                                            "posted"
-                                        )
-                                    }"
-                                )
-                                .setPositiveButton(android.R.string.ok, null)
-                                .create().also {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                        it!!.window?.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
-                                        it!!.window?.attributes?.blurBehindRadius = 5
-                                    }
-                                }.show()
-                            true
-                        }
-                    }
-                }
-                menu.addSubMenu(0,0,1,"Options").also {mo->
-                    mo.item.setIcon(R.drawable.more_alt).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                    if (itemdata != null) {
-                        mo.opt()
-                    } else {
-                        mo.add("Unavailable")
-                    }
-                }
-                menu.add(0,0,0,"Play").setIcon(R.drawable.play).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS or MenuItem.SHOW_AS_ACTION_WITH_TEXT).setVisible(itemdata != null).setOnMenuItemClickListener {
-                    val i = Intent(activity, ProjectActivity::class.java)
-                    i.putExtra("project", itemdata!!.id)
-                    activity.startActivity(i)
-                    true
-                }
+            pb.thumbnail.setOnClickListener {
+                val i = Intent(
+                    Intent.ACTION_VIEW,
+                    itemdata!!.thumb.toUri()
+                )
+                activity.startActivity(
+                    Intent.createChooser(
+                        i,
+                        "share"
+                    )
+                )
             }
-            dialog?.setTitle(itemdata?.title)
+
+
 
 
 
@@ -359,6 +387,8 @@ class InfoProDialog()  : DialogFragment(){
         }catch (e: Exception){
             notfound(e.toString())
         }
+
+
     }
 
 }

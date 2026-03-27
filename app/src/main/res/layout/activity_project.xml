@@ -11,17 +11,17 @@
         android:isScrollContainer="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    <com.linroid.filtermenu.library.FilterMenuLayout
-        android:layout_width="match_parent"
-        android:id="@+id/menu"
-        android:elevation="8dp"
-        app:fm_expandedRadius="96dp"
-        app:fm_collapsedRadius="27dp"
-        app:fm_centerBottom="50dp"
-        app:fm_centerRight="50dp"
-        app:fm_primaryColor="?android:colorAccent"
-        app:fm_primaryDarkColor="?android:colorPressedHighlight"
-        android:layout_height="match_parent"/>
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/menufun"
+        android:alpha="0.7"
+        android:elevation="5dp"
+        android:tint="?android:textColorPrimary"
+        android:backgroundTint="?android:textColorPrimaryInverse"
+        android:layout_margin="15dp"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/more"/>
 
 
 
