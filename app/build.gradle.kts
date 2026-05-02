@@ -13,8 +13,6 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.2"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -47,4 +45,5 @@ dependencies {
     implementation(libs.library)
     implementation(libs.picasso)
     testImplementation(libs.junit)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }

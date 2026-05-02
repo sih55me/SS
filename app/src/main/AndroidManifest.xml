@@ -46,6 +46,15 @@
                 android:resource="@xml/search" />
         </activity>
 
+        <activity
+            android:name=".AssetPage"
+            android:label="Asset Project"
+            android:theme="@style/Theme.SS.ProPre"
+            android:exported="false">
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/search" />
+        </activity>
+
         <activity android:name=".Result"
             android:exported="true">
             <intent-filter>

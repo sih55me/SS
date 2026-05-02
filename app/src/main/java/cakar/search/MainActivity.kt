@@ -1,13 +1,19 @@
 package cakar.search
 
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
+import android.provider.SearchRecentSuggestions
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -16,15 +22,11 @@ import android.widget.EditText
 import android.widget.SearchView
 import android.widget.Toast
 import android.window.OnBackInvokedCallback
-import android.app.Activity
-import android.app.SearchManager
-import android.content.Context
-import android.net.Uri
-import android.provider.SearchRecentSuggestions
 import cakar.search.adapter.Adapter
 import cakar.search.databinding.ActivityMainBinding
 import cakar.search.filetype.Project
 import cakar.search.ste.Settings
+
 
 class MainActivity : Activity() {
 
@@ -133,7 +135,8 @@ class MainActivity : Activity() {
             this,
             SearchProvider.AUTHORITY, SearchProvider.MODE
         )
-
+        val policy = ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
         binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(binding.root)
         e(resources.configuration)

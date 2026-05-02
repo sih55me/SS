@@ -24,6 +24,7 @@ import android.widget.EditText
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.core.text.toSpanned
+import cakar.search.com.ProjectComponent
 import cakar.search.databinding.ActivityProjectBinding
 import cakar.search.ste.Ngatur
 import cakar.search.ste.Settings
@@ -197,7 +198,7 @@ class ProjectActivity : Activity() {
                 val d = ProgressDialog.show(this, "Javascript", "Fetchin' data", true, false)
                 bin.main.evaluateJavascript(it.title.toString()){i->
                     d.dismiss()
-                    val complie = ProjectComponent.fromJSON(i)
+                    val complie = ProjectComponent.fromJSON(i.replace("""\""", ""))
                     val l = ArrayAdapter(this, android.R.layout.simple_list_item_1, complie.sprites)
                     AlertDialog.Builder(this).setTitle("sss").setSingleChoiceItems(l,0,null).setPositiveButton("O", null).setNegativeButton("p") { _, _ ->
                         jsclick.onMenuItemClick(it)

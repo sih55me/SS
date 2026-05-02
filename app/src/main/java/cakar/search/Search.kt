@@ -375,6 +375,7 @@ class Search(private val activity : Activity) {
                 val item = JSONObject(it)
                 val o = makinP(item)
                 o.o(item)
+                o.uninfo["project_token"] = item.getString("project_token")
                 onGet.invoke(o)
             } catch (e: JSONException) {
                 reason = ("Looks like the project ${id} is deleted or not posted by author.\n\nLogs : ${e.message}\n\nContent:\n$it" )

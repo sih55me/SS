@@ -19,18 +19,27 @@ import android.widget.TabHost
 import android.widget.Toast
 import android.app.Dialog
 import android.app.FragmentTransaction
+import android.graphics.drawable.ColorDrawable
 import android.transition.Explode
 import android.transition.Fade
 import android.transition.Transition
+import android.util.Log
 import android.view.MenuInflater
 import android.view.Window
 import android.widget.ArrayAdapter
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
+import cakar.search.com.ProjectComponent
 import cakar.search.databinding.PinfoBinding
 import cakar.search.filetype.Project
+import cakar.search.wtbcore.PreviewImgPage
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 
 import com.squareup.picasso.Picasso
+import org.json.JSONArray
+import org.json.JSONException
 
 class InfoProDialog()  : DialogFragment(){
     var itemdata : Project? = null
@@ -124,7 +133,8 @@ class InfoProDialog()  : DialogFragment(){
                             )
                         )
                         true
-                    } catch (_: Exception) {
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                         Toast.makeText(
                             activity,
                             "Project unload!",
@@ -132,12 +142,11 @@ class InfoProDialog()  : DialogFragment(){
                         ).show()
                         false
                     }
-                    true
                 }
                 add("Status").setOnMenuItemClickListener {
                     Builder(activity).setTitle("Status")
                         .setMessage(
-                            "Visibility : ${itemdata!!.uninfo["visibility"]}\nIs Public : ${itemdata!!.uninfo["public"]}\n Publish : ${
+                            "Token key : ${itemdata!!.uninfo["project_token"]}\nVisibility : ${itemdata!!.uninfo["visibility"]}\nIs Public : ${itemdata!!.uninfo["public"]}\nPublish : ${
                                 itemdata?.uninfo?.get(
                                     "posted"
                                 )
@@ -152,6 +161,8 @@ class InfoProDialog()  : DialogFragment(){
                         }.show()
                     true
                 }
+
+                add("Asset").intent = Intent(activity, AssetPage::class.java).putExtra("item", itemdata)
             }
         }
         menu.add(0,0,2,"Close").setIcon(R.drawable.close).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(itemdata != null).setOnMenuItemClickListener {
@@ -358,16 +369,9 @@ class InfoProDialog()  : DialogFragment(){
                 .error(resources.getColor(android.R.color.holo_red_light).toDrawable())
                 .into(pb.thumbnail)
             pb.thumbnail.setOnClickListener {
-                val i = Intent(
-                    Intent.ACTION_VIEW,
-                    itemdata!!.thumb.toUri()
-                )
-                activity.startActivity(
-                    Intent.createChooser(
-                        i,
-                        "share"
-                    )
-                )
+                PreviewImgPage(activity, PreviewImgPage.Get(pb.thumbnail.drawable?: ColorDrawable(), itemdata?.title.orEmpty())).also {
+                    it.show()
+                }
             }
 
 
