@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:minWidth="500dp"
+    android:minHeight="500dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="?android:windowBackground"
+            android:elevation="5dp" />
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:id="@+id/thumbnail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:minWidth="355dp"
+                            android:minHeight="266dp" />
+
+                        <ProgressBar
+                            android:id="@+id/progress_circular"
+                            style="?android:progressBarStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:hint="prject"
+                        android:textIsSelectable="true"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:hint="desc here!"
+                        android:textIsSelectable="true" />
+
+                    <View
+                        android:id="@+id/divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider" />
+
+                    <HorizontalScrollView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp">
+
+                        <TextView
+                            android:id="@+id/stat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="❤️  0   💥  0"
+                            android:textIsSelectable="true" />
+                    </HorizontalScrollView>
+
+
+                    <View
+                        android:id="@+id/divider2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider" />
+
+                    <TextView
+                        android:id="@+id/crea"
+                        style="?android:buttonBarButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:drawableEnd="@drawable/next"
+                        android:gravity="center_vertical"
+                        android:textSize="20sp"
+                        tools:text="User" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider" />
+
+                    <FrameLayout
+                        android:id="@+id/remix_lay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="15dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="vertical"
+                            android:visibility="gone"
+                            tools:visibility="visible">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="#1AA6A6A6"
+                                android:gravity="center_vertical"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
+                                android:text="Remixes"
+                                android:textStyle="italic|bold" />
+
+                            <Button
+                                android:id="@+id/ori"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+
+                                android:enabled="false"
+                                android:gravity="center_vertical"
+                                android:text="Original version" />
+
+                            <Button
+                                android:id="@+id/orire"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:enabled="false"
+                                android:gravity="center_vertical"
+                                android:text="Original-Remix version" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:textIsSelectable="true">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tab3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:textIsSelectable="true">
+
+                </TextView>
+            </FrameLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+</ViewAnimator>

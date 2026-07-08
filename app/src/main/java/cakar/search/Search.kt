@@ -29,6 +29,9 @@ import kotlin.synchronized
 class Search(private val activity : Activity) {
 
 
+
+    var token = ""
+
     companion object{
         val modes = arrayOf("popular", "trending", "recent")
         val searchType = arrayOf("search","explore")
@@ -307,7 +310,10 @@ class Search(private val activity : Activity) {
         onGet : ((Project) -> Unit)={}
     ){
 
-        val urlT = "https://api.scratch.mit.edu/users/$user/projects?limit=$limitGet&offset=${offset}"
+        var urlT = "https://api.scratch.mit.edu/users/$user/projects?limit=$limitGet&offset=${offset}"
+        if(token.isNotEmpty()){
+            urlT = "$urlT&x-token=$token"
+        }
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
             resultF = it
             try {
@@ -367,7 +373,10 @@ class Search(private val activity : Activity) {
         onGet : ((Project) -> Unit)
     ){
 
-        val urlT = "https://api.scratch.mit.edu/projects/$id"
+        var urlT = "https://api.scratch.mit.edu/projects/$id"
+        if(token.isNotEmpty()){
+            urlT = "$urlT?x-token=$token"
+        }
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
             resultF = it
             try {
@@ -378,6 +387,7 @@ class Search(private val activity : Activity) {
                 o.uninfo["project_token"] = item.getString("project_token")
                 onGet.invoke(o)
             } catch (e: JSONException) {
+                e.printStackTrace()
                 reason = ("Looks like the project ${id} is deleted or not posted by author.\n\nLogs : ${e.message}\n\nContent:\n$it" )
                 onError(1.5)
             }
@@ -387,6 +397,7 @@ class Search(private val activity : Activity) {
             val w = StringWriter()
             val s = PrintWriter(w)
             e.printStackTrace(s)
+            e.printStackTrace()
             onError(1.5)
         })
         requestQueue.add(stringRequest.also{it.tag = "search"})
@@ -397,13 +408,17 @@ class Search(private val activity : Activity) {
         onGet : ((User) -> Unit)
     ){
 
-        val urlT = "https://api.scratch.mit.edu/users/$id"
+        var urlT = "https://api.scratch.mit.edu/users/$id"
+        if(token.isNotEmpty()){
+            urlT = "$urlT?x-token=$token"
+        }
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
             resultF = it
             try {
                 Log.i("I URL", it)
                 val item = JSONObject(it)
                 val o = makeU(item)
+                print(item)
                 onGet.invoke(o)
             } catch (e: JSONException) {
                 handleException(e,-1.0)
@@ -419,20 +434,23 @@ class Search(private val activity : Activity) {
 
 
     fun fetchCommentFromProject(
+        /**
+         * First = username
+         *
+         * Second = project id
+         */
         data:Pair<String,Int>,
-        query:String = "",
         offset:Int = 0,
         onGet : ((Komentar) -> Unit)={}
     ){
 
 
-        val urlT = "https://api.scratch.mit.edu/users/${data.first}/projects/${data.second}?limit=$limitGet&offset=${offset}"
+        val urlT = "https://api.scratch.mit.edu/users/${data.first}/projects/${data.second}/comments?limit=$limitGet&offset=${offset}"
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
             resultF = it
             try {
                 Log.i("I URL", it)
                 if((it == "{}") or (it == "[]")){
-                    Toast.makeText(activity, "No results found", Toast.LENGTH_SHORT).show()
                     onError(1.0)
                     return@StringRequest
                 }
@@ -445,7 +463,6 @@ class Search(private val activity : Activity) {
                         item.getJSONObject("author").getString("image"),
                         item.getString("content"),
                         Pair(item.getString("datetime_created"), item.getString("datetime_modified"))
-
                     )
                     onGet.invoke(k)
                 }
@@ -457,5 +474,69 @@ class Search(private val activity : Activity) {
             handleException(e,1.0)
         })
         requestQueue.add(stringRequest.also{it.tag = "search"})
+    }
+
+
+    fun getMessageFromUser(
+        user: CharSequence,
+        offset:Int = 0,
+        onGet : ((JSONArray) -> Unit)={}
+    ) {
+        var urlT = "https://api.scratch.mit.edu/users/$user/messages?limit=$limitGet&offset=${offset}"
+        if(token.isNotEmpty()){
+            urlT = "$urlT&x-token=$token"
+        }
+        val stringRequest = StringRequest(Request.Method.GET, urlT, {
+            resultF = it
+            try {
+                Log.i("I URL", it)
+                if((it == "{}") or (it == "[]")){
+                    Toast.makeText(activity, "No results found", Toast.LENGTH_SHORT).show()
+                    return@StringRequest
+                }
+                onGet(JSONArray(it))
+
+            } catch (e: JSONException) {
+                handleException(e)
+                e.printStackTrace()
+            }
+
+        }, {e->
+            handleException(e)
+        })
+        requestQueue.add(stringRequest.also{it.tag = "search"})
+
+    }
+
+
+
+    fun whatHappenBro(
+        user: String,
+        onGet:(JSONArray) -> Unit={}
+    ){
+        var urlT = "https://api.scratch.mit.edu/users/$user/following/users/activity?limit=5"
+        if(token.isNotEmpty()){
+            urlT = "$urlT&x-token=$token"
+        }
+        val stringRequest = StringRequest(Request.Method.GET, urlT, {
+            resultF = it
+            try {
+                Log.i("I URL", it)
+                if((it == "{}") or (it == "[]")){
+                    Toast.makeText(activity, "No results found", Toast.LENGTH_SHORT).show()
+                    return@StringRequest
+                }
+                onGet(JSONArray(it))
+
+            } catch (e: JSONException) {
+                handleException(e)
+                e.printStackTrace()
+            }
+
+        }, {e->
+            handleException(e)
+        })
+        requestQueue.add(stringRequest.also{it.tag = "search"})
+        "/users/<username>/following/users/activity"
     }
 }

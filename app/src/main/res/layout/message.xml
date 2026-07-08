@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:elevation="2dp"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
+        android:layout_toEndOf="@android:id/icon"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView android:id="@android:id/text1"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:hint="Message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView android:id="@android:id/text2"
+            tools:hint="Content here"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@android:id/icon"
+        android:padding="7dp"
+        android:layout_margin="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_width="wrap_content"
+        android:minHeight="45dp"
+        android:backgroundTint="?android:colorAccent"
+        android:minWidth="45dp"
+        android:tint="?android:textColorPrimaryInverse"
+        android:background="@drawable/full_frame"
+        android:layout_height="wrap_content"
+        tools:src="@android:drawable/ic_lock_lock" />
+</RelativeLayout>

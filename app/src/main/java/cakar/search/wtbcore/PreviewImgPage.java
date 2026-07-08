@@ -76,9 +76,7 @@ public class PreviewImgPage extends Dialog {
     }
 
     public PreviewImgPage(@NotNull Context context,boolean asDialog) {
-        super(context, R.style.Theme_SS_ProPre);
-        Objects.requireNonNull(getWindow()).addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        Objects.requireNonNull(getWindow()).addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        super(context, android.R.style.Theme_DeviceDefault);
         isDialog = asDialog;
         img.setSwipeToDismissEnabled(true);
         img.setOnDismiss(  () ->{

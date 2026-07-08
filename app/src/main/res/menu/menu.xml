@@ -10,15 +10,37 @@
             <item android:id="@+id/emu" android:title="User"/>
         </menu>
     </item>
+
+    <group
+        android:visible="false"
+        android:id="@+id/needUser">
+        <item
+            android:title="Inbox"
+            android:id="@+id/dm"/>
+        <item
+            android:title="Personal stuff">
+            <menu>
+                <item
+                    android:title="Unreleased project"
+                    android:id="@+id/pripro"/>
+                <item
+                    android:title="studio"
+                    android:id="@+id/pristu"/>
+            </menu>
+        </item>
+
+
+    </group>
     <item
         android:title="Settings"
         android:id="@+id/set"/>
 
+
+
     <item
         android:id="@+id/app_bar_search"
-        android:actionViewClass="android.widget.SearchView"
         android:icon="@drawable/search"
         android:orderInCategory="3"
-        android:showAsAction="always|collapseActionView"
+        android:showAsAction="always"
         android:title="Search" />
 </menu>

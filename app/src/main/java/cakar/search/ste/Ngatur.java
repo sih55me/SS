@@ -12,7 +12,13 @@ public class Ngatur {
 
     private SharedPreferences mahaSetel;
 
-    private String[] keys = {"pro_fulldef", "pro_width", "pro_height"};
+    private String[] keys = {
+            "pro_fulldef",
+            "pro_width",
+            "pro_height",
+            "addons",
+            "configEmbed"
+    };
     public Ngatur(Context konteks){
         this.konteks = konteks;
         mahaSetel = PreferenceManager.getDefaultSharedPreferences(konteks);

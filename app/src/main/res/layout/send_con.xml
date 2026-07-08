@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_gravity="bottom"
+    android:padding="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/sendLay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:maxHeight="100dp"
+            android:gravity="start"
+            android:hint="What do you want to say?"
+            android:inputType="textMultiLine"
+            android:padding="15dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/add"
+                style="?android:borderlessButtonStyle"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:src="@drawable/more_alt" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/send"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:alpha="0.3"
+                android:backgroundTint="?android:colorAccent"
+                android:src="@drawable/send"
+                android:tint="?android:textColorPrimaryInverse" />
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

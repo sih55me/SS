@@ -5,12 +5,14 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+
 import kotlin.Pair;
 
 public class Komentar implements Parcelable {
 
     Object id;
-    String usr;
+     String usr;
 
     String usrThumb;
     String komentar;

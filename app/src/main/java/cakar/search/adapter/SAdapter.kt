@@ -24,6 +24,8 @@ import cakar.search.R
 import cakar.search.filetype.Studia
 import cakar.search.databinding.ItemBinding
 import cakar.search.databinding.PinfoBinding
+import coil3.load
+import coil3.request.error
 
 import com.squareup.picasso.Picasso
 
@@ -68,10 +70,13 @@ class SAdapter(
             }.show(activity.fragmentManager, "isd")
             true
         }
-        Picasso.get()
-            .load(itemdata.thumb)
-            .error(R.drawable.ic_launcher_background)
-            .into(binding.thumbnail)
+        binding.thumbnail.load(
+            itemdata.thumb,
+            builder = {
+                this.error(R.drawable.error)
+            }
+        )
+
         binding.root.setOnClickListener{
             binding.title.performLongClick()
         }

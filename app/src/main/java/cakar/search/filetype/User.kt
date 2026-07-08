@@ -1,7 +1,9 @@
 package cakar.search.filetype
 
 import android.os.Parcel
+import com.google.gson.annotations.SerializedName
 import android.os.Parcelable
+import org.json.JSONObject
 
 data class User(
     val id: Int,
@@ -57,5 +59,24 @@ data class User(
      * 2. is author from scratch team?
      */
     val uninfo = mutableMapOf<String,String>()
+
+
+    data class AsActive(
+        var id: Int,
+        @SerializedName("username") var title: String,
+        var token: String,
+        var thumb: String,
+    ){
+
+        constructor(j: JSONObject):this(0,"","",""){
+            try{
+                id = j.getInt("id")
+                title = j.getString("username")
+                token = j.getString("token")
+            }catch (_: Exception){
+
+            }
+        }
+    }
 
 }

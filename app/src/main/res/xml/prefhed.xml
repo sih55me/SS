@@ -6,4 +6,7 @@
     <header
         android:title="Search history"
         android:fragment="cakar.search.ste.f.HistorySettings"/>
+    <header
+        android:title="Scratch Account"
+        android:fragment="cakar.search.Akun"/>
 </preference-headers>

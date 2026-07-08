@@ -12,13 +12,16 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.SearchRecentSuggestions
+import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.Toast
 import android.window.OnBackInvokedCallback
 import cakar.search.MainActivity.Companion.handleMainMenu
+import cakar.search.MainActivity.SearcT
 import cakar.search.adapter.Adapter
 import cakar.search.adapter.SAdapter
 import cakar.search.databinding.ResultBinding
@@ -50,7 +53,7 @@ class Result : Activity() {
     private var m = 0
     private var t = 0
 
-    private var skipTo = 0
+
 
     var s = 0
 
@@ -82,15 +85,28 @@ class Result : Activity() {
         }
     }
 
+    val st by lazy {
+        SearcT(this)
+    }
+
+
+    private var skipTo
+        set(value) {
+            st.skipTo = value
+        }
+        get() = st.skipTo
+
+
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        query = intent.getStringExtra("q").orEmpty()
-        if (Intent.ACTION_SEARCH == intent.getAction()) {
-            query = intent.getStringExtra(SearchManager.QUERY)?:query
-        }
+        query = intent.getStringExtra("query").orEmpty()
         val suggestions = SearchRecentSuggestions(
             this,
             SearchProvider.AUTHORITY, SearchProvider.MODE
@@ -98,12 +114,71 @@ class Result : Activity() {
         suggestions.saveRecentQuery(query, null)
         l()
         val se = Search(this@Result)
-        val e = ProgressDialog(this@Result)
-        se.onError = {
-            if(e.isShowing){
-                e.dismiss()
+        se.token = intent.getStringExtra("tkn")?:""
+        val lolod = object: ActionMode.Callback{
+            val p = ProgressBar(this@Result, null, 0, android.R.style.Widget_Holo_ProgressBar_Horizontal)
+            override fun onCreateActionMode(
+                p0: ActionMode?,
+                p1: Menu?
+            ): Boolean {
+                p.isIndeterminate = true
+                if(p.parent ==null){
+                    p0?.customView = p
+                }
+
+                return true
             }
+
+            override fun onPrepareActionMode(
+                p0: ActionMode?,
+                p1: Menu?
+            )=false
+
+            override fun onActionItemClicked(
+                p0: ActionMode?,
+                p1: MenuItem?
+            )=false
+
+            override fun onDestroyActionMode(p0: ActionMode?) {
+                se?.cancelAll()
+            }
+
         }
+
+        val lolero = object: ActionMode.Callback{
+
+            var recr = false
+
+            override fun onCreateActionMode(
+                p0: ActionMode?,
+                p1: Menu?
+            ): Boolean {
+                p0?.setTitle("There's a error!")
+                p0?.subtitle = "Check your connection and try again"
+                p1?.add("Retry")?.setOnMenuItemClickListener {
+                    recreate()
+                    true
+                }
+                window?.decorView?.postDelayed({p0?.finish()},1000L)
+                return true
+            }
+
+            override fun onPrepareActionMode(
+                p0: ActionMode?,
+                p1: Menu?
+            )=false
+
+            override fun onActionItemClicked(
+                p0: ActionMode?,
+                p1: MenuItem?
+            )=false
+
+            override fun onDestroyActionMode(p0: ActionMode?) {
+
+            }
+
+        }
+
         if(savedInstanceState != null){
             padap.data.clear()
             sadap.data.clear()
@@ -114,29 +189,29 @@ class Result : Activity() {
                 sadap.setdata(it)
             }
         }
-        e.apply{
-            isIndeterminate =  true
-            setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            setMessage("Searching for $query")
-            setOnDismissListener {
-                se.cancelAll()
-            }
-            setCanceledOnTouchOutside(false)
-            window!!.setDimAmount(0F)
+        se.onError = {
+            startActionMode(lolero)
         }
-        skipTo = intent.getIntExtra("skipTo", 0)
+        skipTo = intent.getIntExtra("skipTo", 0) + se.limitGet
+        val mode = intent.getIntExtra("searchBy", 0)
+        val isFindTag = query.contains("#")
         fun pP(){
             binding.tabpro.adapter = padap
             if (padap.data.isEmpty()) {
                 padap.data.clear()
-                e.show()
-                se.searchProject(
-                    query, offset = skipTo
-                ) {
-                    if (e.isShowing) {
-                        e.dismiss()
-                    }
+                val e = startActionMode(lolod)
+                val k:(Project)->Unit ={
+                    e?.finish()
                     padap.setdata(it)
+                }
+                if(isFindTag){
+                    se.searchProject(
+                        query, offset = skipTo - se.limitGet, stype = 1, mode = mode, onGet = k
+                    )
+                }else{
+                    se.searchProject(
+                        query, offset = skipTo - se.limitGet, stype = 0, mode=mode,onGet = k
+                    )
                 }
             }
         }
@@ -145,23 +220,35 @@ class Result : Activity() {
             binding.tabstu.adapter = sadap
             if (sadap.data.isEmpty()) {
                 sadap.data.clear()
-                e.show()
-                se.searchStudia(
-                    query, offset = skipTo
-                ) {
-                    if (e.isShowing) {
-                        e.dismiss()
-                    }
+                val e = startActionMode(lolod)
+                val k:(Studia)->Unit ={
+                    e?.finish()
                     sadap.setdata(it)
+                }
+                if(isFindTag){
+
+                    se.searchStudia(
+                        query, offset = skipTo - se.limitGet, stype = 1,mode=mode, onGet = k
+                    )
+                }else {
+                    se.searchStudia(
+                        query, offset = skipTo - se.limitGet, stype = 0,mode=mode, onGet = k
+                    )
                 }
             }
         }
         val na = savedInstanceState?.getInt("nav",0)?:0
         if(actionBar != null){
             if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                actionBar?.setTitle("Result of ${query}")
+                if(isFindTag){
+                    actionBar?.setTitle(query)
+                }else{
+                    actionBar?.setTitle("Result of..")
+                    actionBar?.setSubtitle(query)
+                }
             }else{
                 actionBar?.setTitle(null)
+                actionBar?.setSubtitle(null)
             }
             actionBar?.setDisplayHomeAsUpEnabled(true)
             actionBar?.navigationMode = ActionBar.NAVIGATION_MODE_TABS
@@ -221,70 +308,23 @@ class Result : Activity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
-        menu.add(0, 'm'.code,0,"Mini mode").setCheckable(true).setChecked(typeList == -1)
+        menu.addSubMenu("View").add(0, 'm'.code,0,"Mini mode").setCheckable(true).setChecked(typeList == -1)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.findItem('m'.code)?.setChecked(typeList == -1)
-        menu?.findItem(R.id.app_bar_search)?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener{
-            var onBack = Any()
-            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    try{
-                        onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBack as OnBackInvokedCallback)
-                    }catch (_: Exception){}
-                }
-                return true
-            }
-
-            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    try{
-                        onBack = OnBackInvokedCallback{
-                            item.collapseActionView()
-                        }
-                        onBackInvokedDispatcher.registerOnBackInvokedCallback(0,onBack as OnBackInvokedCallback)
-                    }catch (_: Exception){}
-                }
-                item.actionView?.let {
-                    if(it is SearchView){
-                        Handler(mainLooper).postDelayed({
-                            it.setQuery(query, false)
-                        },600L)
-                        val si = (getSystemService(SEARCH_SERVICE) as SearchManager).getSearchableInfo(componentName)
-                        it.setSearchableInfo(si)
-                        it.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                            override fun onQueryTextSubmit(query: String): Boolean {
-                                fun d(){
-                                    val i = Intent(this@Result, Result::class.java)
-                                    i.putExtra("q", query)
-                                    if(this@Result.query == query){
-                                        Toast.makeText(this@Result, "Same query, Next page", Toast.LENGTH_SHORT).show()
-                                        i.putExtra("skipTo", skipTo + 20)
-                                    }
-                                    startActivity(i)
-                                };d()
-                                return true
-                            }
-
-                            override fun onQueryTextChange(newText: String?): Boolean{
-                                it.isSubmitButtonEnabled = !newText.isNullOrEmpty()
-                                return true
-                            }
-
-                        })
-                    }
-                }
-                return true
-            }
-        })
+        menu?.setGroupVisible(R.id.needUser, intent.getStringExtra("tkn").orEmpty().isNotEmpty())
         return super.onPrepareOptionsMenu(menu)
     }
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         handleMainMenu(item)
+        if(item.itemId == R.id.app_bar_search){
+            st.setQueryText(query)
+            st.show()
+        }
         if(item.itemId == 'm'.code){
             if(typeList == 0){
                 typeList = -1
@@ -305,6 +345,12 @@ class Result : Activity() {
         }
         if(item.itemId == android.R.id.home){
             finish()
+        }
+        if(item.itemId == R.id.dm) {
+            showDialog(
+                0x01,
+                intent.getBundleExtra("login")
+            )
         }
         return super.onOptionsItemSelected(item)
     }

@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,28 +19,47 @@ import android.preference.Preference
 import android.preference.PreferenceActivity
 import android.preference.PreferenceCategory
 import android.preference.PreferenceScreen
+import android.view.ActionMode
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.MediaController
+import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.Toast
+import cakar.search.MainActivity.Companion.downloadSmthUri
 import cakar.search.com.DownAsse
 import cakar.search.com.ProjectComponent
 import cakar.search.databinding.SfxPlayerBinding
 import cakar.search.filetype.Project
 import cakar.search.wtbcore.PreviewImgPage
+import coil3.ImageLoader
+import coil3.asDrawable
+import coil3.decode.Decoder
+import coil3.imageLoader
+import coil3.load
+import coil3.request.Disposable
+import coil3.request.ImageRequest
+import coil3.request.target
+import coil3.svg.SvgDecoder
+import coil3.util.CoilUtils
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import java.lang.Exception
+import java.util.Stack
 
 class AssetPage: PreferenceActivity() {
 
     internal var conjson = ""
     internal var pj = ProjectComponent()
 
+    val req: Stack<Disposable> = Stack()
+
+
+    var loadingPopup : ActionMode? = null
     private val o :(ProjectComponent)->Unit={ content ->
         runOnUiThread {
             (preferenceScreen?.findPreference("sprites") as PreferenceCategory).removeAll()
@@ -53,22 +73,15 @@ class AssetPage: PreferenceActivity() {
             }
         }
     }
+
+
+    val itemdata get()= intent.getParcelableExtra<Project>("item")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setWindowAnimations(android.R.style.Animation_Activity)
-        when(resources.configuration.orientation){
-            Configuration.ORIENTATION_LANDSCAPE -> {
-                window!!.setLayout(window!!.windowManager.defaultDisplay.width/2, window!!.windowManager.defaultDisplay.height)
-                window!!.setGravity(Gravity.END)
-            }
-            else -> {
 
-            }
-
-        }
 
         actionBar?.setDisplayHomeAsUpEnabled(true)
-        val itemdata = intent.getParcelableExtra<Project>("item")
+
         if (itemdata == null){
             Toast.makeText(this, "No input project", 0).show()
         }
@@ -80,22 +93,26 @@ class AssetPage: PreferenceActivity() {
             addPreferencesFromResource(R.xml.assetpage)
         }
 
-        if (savedInstanceState?.getString("conjson").isNullOrEmpty()){
-            ProjectComponent.fetchProjectContent(
-                projectId = itemdata?.id.toString().orEmpty(),
-                token = itemdata?.uninfo["project_token"].toString(),
-                onSuccess = o,
-                onError = { error ->
-                    Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
-                }
-            )
-        }else{
-            ProjectComponent.parseProj(
-                savedInstanceState.getString("conjson").orEmpty(),
-                pj,
-                o
-            )
-        }
+        Thread{
+            if (savedInstanceState?.getString("conjson").isNullOrEmpty()) {
+                ProjectComponent.fetchProjectContent(
+                    projectId = itemdata?.id.toString().orEmpty(),
+                    token = itemdata?.uninfo["project_token"].toString(),
+                    onSuccess = o,
+                    onError = { error ->
+                        runOnUiThread{
+                            Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                )
+            } else {
+                ProjectComponent.parseProj(
+                    savedInstanceState.getString("conjson").orEmpty(),
+                    pj,
+                    o
+                )
+            }
+        }.start()
     }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
@@ -116,11 +133,48 @@ class AssetPage: PreferenceActivity() {
             )
             true
         }
+        menu?.add("Download [sb3]")?.setOnMenuItemClickListener {
+            downloadSmthUri(Uri.parse("https://projects.scratch.mit.edu/${itemdata?.id}?token=${itemdata?.uninfo["project_token"].toString()}"), "Dowloading scratch project"){
+
+            }
+            true
+        }
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
+    }
+    val lolod get()  = object: ActionMode.Callback{
+        val p = ProgressBar(this@AssetPage, null, 0, android.R.style.Widget_Holo_ProgressBar_Horizontal)
+        override fun onCreateActionMode(
+            p0: ActionMode?,
+            p1: Menu?
+        ): Boolean {
+            p.isIndeterminate = true
+            if(p.parent ==null){
+                p0?.customView = p
+            }
+
+            return true
+        }
+
+        override fun onPrepareActionMode(
+            p0: ActionMode?,
+            p1: Menu?
+        )=false
+
+        override fun onActionItemClicked(
+            p0: ActionMode?,
+            p1: MenuItem?
+        )=false
+
+        override fun onDestroyActionMode(p0: ActionMode?) {
+            if(req.isEmpty().not()){
+                req.get(req.size - 1).dispose()
+            }
+        }
+
     }
 
     fun spritePage(sp: ProjectComponent.Sprite, type:Int): PreferenceScreen  = preferenceManager.createPreferenceScreen(this).also {
@@ -145,48 +199,36 @@ class AssetPage: PreferenceActivity() {
                         2 -> DownAsse.urlFromV2(sp.costumes[ind])
                         else -> ""
                     }
-                    val pr = ProgressDialog(this)
-                    pr.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-                    val imgl = object : Target{
-                        override fun onBitmapLoaded(
-                            p0: Bitmap?,
-                            p1: Picasso.LoadedFrom?
-                        ) {
-                            pr.dismiss()
-                            if(p0 == null){
-                                return
+
+
+
+                    val request = ImageRequest.Builder(this)
+                        .data(u)
+                        .target(
+                            onStart = {
+                                loadingPopup = (d as Dialog).window!!.decorView.startActionMode(lolod)
+
+                            },
+                            onError = {
+                                loadingPopup?.customView = null
+                                loadingPopup?.setTitle("ERROR!!")
+                            },
+                            onSuccess = {
+                                loadingPopup?.finish()
+                                loadingPopup = null
+                                val ph = PreviewImgPage(this@AssetPage, PreviewImgPage.Get(it.asDrawable(resources), sp.costumes[ind].first))
+                                ph.show()
                             }
-                            val ph = PreviewImgPage(this@AssetPage, PreviewImgPage.Get(p0, sp.costumes[ind].first))
-                            ph.show()
+                        )
+                        .build()
+                    ImageLoader.Builder(this).components {
+                        if(u.contains("svg")){
+                            add(SvgDecoder.Factory())
                         }
-
-                        override fun onBitmapFailed(
-                            p0: Exception?,
-                            p1: Drawable?
-                        ) {
-                            pr.setMessage("FAILURE!\ne:${p0?.message}")
-                            p0?.printStackTrace()
-                        }
-
-                        override fun onPrepareLoad(p0: Drawable?) {
-                            pr.setMessage("Loading the image..")
-                        }
-
+                    }.build().enqueue(request).let { l ->
+                        req.push(l)
                     }
-                    pr.isIndeterminate = true
-                    pr.setMessage("Progress start...")
-                    pr.setButton(DialogInterface.BUTTON_NEGATIVE, getString(android.R.string.cancel)){_,_->
 
-                    }
-                    pr.setOnDismissListener {
-                        Picasso.get().cancelTag("loadSpriteImg")
-                    }
-                    pr.show()
-                    if(!u.contains("svg")){
-                        Picasso.get().load(u).tag("loadSpriteImg").into(imgl)
-                    }else{
-                        pr.setMessage("SVG preview in maintenance")
-                    }
                 }.setPositiveButton("Back", null).show()
                 true
             }
@@ -206,7 +248,6 @@ class AssetPage: PreferenceActivity() {
                     val pr = Dialog(this)
                     pr.setTitle(sp.sounds[ind].first)
                     val mcontroller = SfxPlayerBinding.inflate(layoutInflater)
-                    val handler = Handler(Looper.getMainLooper())
                     val mMediaPlayer = MediaPlayer()
                     val mainlooplayer = object : Runnable {
                         override fun run() {
@@ -218,14 +259,28 @@ class AssetPage: PreferenceActivity() {
                             mcontroller.time.text = "${ mMediaPlayer.duration / 1000 }"
 
                             if(mMediaPlayer.isPlaying){
-                                mcontroller.pause.text = "Pause"
+                                mcontroller.pause.setImageResource(R.drawable.play)
+                                mcontroller.pause.contentDescription = "Pause"
                             }else{
-                                mcontroller.pause.text = "Play"
+                                mcontroller.pause.setImageResource(R.drawable.pause)
+                                mcontroller.pause.contentDescription = "Play"
                             }
-                            handler.postDelayed(this, 500)
+                            window.decorView.postDelayed(this, 500)
                         }
                     }
 
+
+                    mcontroller.opt.setOnCreateContextMenuListener { menu, view, info ->
+                        menu.add("Download").setOnMenuItemClickListener {
+                            downloadSmthUri(Uri.parse(u), "DOWNLOAD AUDIO ASSET"){
+
+                            }
+                            true
+                        }
+                    }
+                    mcontroller.opt.setOnClickListener {
+                        it.showContextMenu()
+                    }
                     mcontroller.pause.setOnClickListener {
                         if(mMediaPlayer.isPlaying){
                             mMediaPlayer.pause()
@@ -236,7 +291,7 @@ class AssetPage: PreferenceActivity() {
                     pr.setContentView(mcontroller.root)
                     mMediaPlayer.apply {
                         setDataSource(u)
-                        prepare()
+                        prepareAsync()
                         setOnPreparedListener {
                             mcontroller.progress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
                                 override fun onProgressChanged(
@@ -257,12 +312,12 @@ class AssetPage: PreferenceActivity() {
                                 }
 
                             })
-                            handler.postDelayed(mainlooplayer, 500)
+                            window.decorView.postDelayed(mainlooplayer, 500)
                         }
                         setAudioStreamType(AudioManager.STREAM_MUSIC)
                     }
                     pr.setOnDismissListener {
-                        handler.removeCallbacks(mainlooplayer)
+                        window.decorView.removeCallbacks(mainlooplayer)
                         mMediaPlayer.reset()
                         mMediaPlayer.setOnPreparedListener(null)
                         mMediaPlayer.release()

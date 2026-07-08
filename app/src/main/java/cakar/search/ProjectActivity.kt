@@ -1,5 +1,6 @@
 package cakar.search
 
+import android.R
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
@@ -11,6 +12,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.Html
 import android.util.Rational
+import android.view.ActionMode
 import android.view.ContextThemeWrapper
 import android.view.Menu
 import android.view.MenuItem
@@ -22,6 +24,7 @@ import android.webkit.WebView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.PopupMenu
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.text.toSpanned
 import cakar.search.com.ProjectComponent
@@ -34,13 +37,14 @@ class ProjectActivity : Activity() {
     private val bin by lazy { ActivityProjectBinding.inflate(layoutInflater) }
     var isFullScreen = false
     var isMinimize = false
+    var url = ""
+    val s by lazy { Ngatur(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setWindowAnimations(android.R.style.Animation_Activity)
         window?.setDimAmount(0F)
         super.onCreate(savedInstanceState)
-        val s = Ngatur(this)
-        window.setBackgroundDrawable(resources.getDrawable(android.R.drawable.toast_frame))
         requestWindowFeature(Window.FEATURE_NO_TITLE)
+        requestWindowFeature(Window.FEATURE_ACTION_MODE_OVERLAY)
         if(s.getBoolean(s.keys[0], false)){
             //auto fullscreen
             getWindow()!!.getDecorView().setSystemUiVisibility(
@@ -52,8 +56,7 @@ class ProjectActivity : Activity() {
                         or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
             )
         }
-        val widthStage = s.getString(s.keys[1], "480")
-        val heightStage = s.getString(s.keys[2], "360")
+
         setContentView(bin.root)
         window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         val p = intent.getIntExtra("project", 0)
@@ -71,55 +74,81 @@ class ProjectActivity : Activity() {
         bin.main.apply{
             settings.javaScriptEnabled = true
             webChromeClient = object:WebChromeClient(){
-                private var isLDS = false
+                var ld : ActionMode? = null
+                val po = ProgressBar(this@ProjectActivity, null, 0, android.R.style.Widget_Holo_ProgressBar_Horizontal)
+                val lolod = object: ActionMode.Callback{
 
-                var ld: ProgressDialog? = null
+                    override fun onCreateActionMode(
+                        p0: ActionMode?,
+                        p1: Menu?
+                    ): Boolean {
+                        if(po.parent ==null){
+                            p0?.customView = po
+                        }
+                        return true
+                    }
+
+                    override fun onPrepareActionMode(
+                        p0: ActionMode?,
+                        p1: Menu?
+                    )=false
+
+                    override fun onActionItemClicked(
+                        p0: ActionMode?,
+                        p1: MenuItem?
+                    )=false
+
+                    override fun onDestroyActionMode(p0: ActionMode?) {
+                        bin.main.stopLoading()
+                    }
+
+                }
 
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     if(newProgress != 100){
                         if(ld == null){
-                            ld = ProgressDialog(this@ProjectActivity).also {
-                                it.setOnShowListener {
-                                    isLDS = true
-                                }
-                                it.window!!.decorView.systemUiVisibility = window!!.decorView.systemUiVisibility
-                                it.setMessage("Loading")
-                                it.setButton(getString(android.R.string.cancel)){_,_->
-                                    (view?:this@apply).stopLoading()
-                                }
-                                it.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-                                it.max = 100
-                                it.progress = 0
-                                it.setOnDismissListener {
-                                    (view?:this@apply).stopLoading()
-                                    isLDS = false
-                                    ld = null
-                                }
-                                it.setCanceledOnTouchOutside(false)
-                                it.show()
-                            }
-                        }else{
-                            ld?.progress = newProgress
+                            ld = startActionMode(lolod)
                         }
+                        po.max = 100
+                        po.progress = newProgress
                     }else{
-                        ld?.setOnDismissListener {
-                            isLDS = false
-                        }
-                        ld?.dismiss()
+                        ld?.finish()
                         ld = null
-                        bin.main.evaluateJavascript("vm.setStageSize($widthStage,$heightStage) ", null)
                     }
                 }
             }
         }
-        bin.main.loadUrl("https://turbowarp.org/$p/embed?settings-button&addons=pause,remove-curved-stage-border&autoplay")
+        loadP(p)
 
+    }
+
+    internal fun loadP(p: Int){
+        val widthStage = s.getString(s.keys[1], "480")
+        val heightStage = s.getString(s.keys[2], "360")
+        val addonsreg = s.getStringSet(s.keys[3], setOf<String>("pause"))
+        val configEmbed = s.getStringSet(s.keys[4], setOf<String>(
+            "settings-button"
+        ))
+        val fps = s.getInt("fps", 30)
+        url = "https://turbowarp.org/$p/embed?size=${widthStage}x${heightStage}&fps=$fps"
+        intent.getStringExtra("tknp")?.let {
+            url += "&token=$it"
+        }
+        if(configEmbed.isNotEmpty()){
+            url += "&${configEmbed.joinToString(separator = "&")}"
+        }
+
+        if(addonsreg.isNotEmpty()){
+            url += "&addons=${addonsreg.joinToString(separator = ",")}"
+        }
+        println(url)
+        bin.main.loadUrl(url)
     }
 
 
     override fun onNewIntent(intent: Intent?) {
         val p = intent?.getIntExtra("project", 0)
-        bin.main.loadUrl("https://turbowarp.org/$p/embed?settings-button&addons=pause,remove-curved-stage-border,mute-project")
+        loadP(p?:0)
     }
 
 
@@ -167,6 +196,8 @@ class ProjectActivity : Activity() {
         makeMenu(menu)
         return super.onCreateOptionsMenu(menu)
     }
+
+
 
     fun makeMenu(menu: Menu){
         menu?.add("Play")?.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER)?.setOnMenuItemClickListener {
@@ -236,7 +267,7 @@ class ProjectActivity : Activity() {
                 true
             }
             menu?.add("Refresh")?.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER)?.setOnMenuItemClickListener {
-                bin.main.reload()
+                loadP(intent.getIntExtra("project", 0))
                 true
             }
             menu?.add("Settings")?.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER)?.intent = Intent(this, Settings::class.java)

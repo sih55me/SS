@@ -2,15 +2,21 @@ package cakar.search.filetype
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 
 data class Project(
     val id: Int,
     val title: String,
-    val desc: String,
+    @SerializedName("description") val desc: String,
     val instructions: String,
     val creator: String,
-    val thumb: String
+    @SerializedName("image") val thumb: String
 ): Parcelable{
+
+
+    var history : Sejarah = Sejarah("","","")
+
+    var remix  = Remix("","")
 
     constructor(p:Parcel) : this(
         p.readInt(),
@@ -51,6 +57,19 @@ data class Project(
         }
 
     }
+
+
+    data class Sejarah(
+        val created:String,
+        val modified:String,
+        val shared:String
+    )
+
+
+    data class Remix(
+        val parent:String,
+        val root: String
+    )
 
     /**
      * 1. created

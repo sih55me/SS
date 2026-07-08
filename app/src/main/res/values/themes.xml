@@ -1,39 +1,31 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SS" parent="android:Theme.DeviceDefault.Light">
+    <style name="Theme.SS" parent="Theme.Notds">
         <item name="android:actionModeWebSearchDrawable">@drawable/search</item>
-        <item name="android:windowBackground">@drawable/popup</item>
-        <item name="android:actionOverflowButtonStyle">@style/WTheme.SS.OverflowMenu</item>
         <!-- Customize your theme here. -->
-
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
 
 
 
 
-    <style name="Theme.SS.ProPre" parent="android:Theme.DeviceDefault.Light.Dialog">
+    <style name="Theme.SS.ProPre" parent="Theme.SS">
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowActionBar">true</item>
-        <item name="android:actionOverflowButtonStyle">@style/WTheme.SS.OverflowMenu</item>
-        <item name="android:windowBackground">@drawable/popup</item>
-        <item name="android:colorControlNormal">#8c8d8e</item>
-        <item name="android:windowSwipeToDismiss">true</item>
     </style>
 
     <style name="Theme.SS.Pro" parent="Theme.SS">
         <!-- Primary brand color. -->
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowOverscan">true</item>
-        <item name="android:immersive">true</item>
-        <item name="android:windowNoTitle">true</item>
-        <!-- Indicate that the window is translucent -->
-        <!-- Optional: set status and navigation bars to transparent for a full-screen effect -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+<!--        <item name="android:windowIsFloating">true</item>-->
+<!--        <item name="android:windowIsTranslucent">true</item>-->
+<!--        <item name="android:windowBackground">@android:color/transparent</item>-->
+<!--        <item name="android:windowOverscan">true</item>-->
+<!--        <item name="android:immersive">true</item>-->
+<!--        <item name="android:windowNoTitle">true</item>-->
+<!--        &lt;!&ndash; Indicate that the window is translucent &ndash;&gt;-->
+<!--        &lt;!&ndash; Optional: set status and navigation bars to transparent for a full-screen effect &ndash;&gt;-->
+<!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
+<!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
         <!-- Customize your theme here. -->
     </style>
     <style name="WTheme.SS.AM" parent="android:Widget.Material">
@@ -50,8 +42,6 @@
     <style name="Theme.SS.PP" parent="Theme.SS">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowSwipeToDismiss">true</item>
-        <item name="android:windowBlurBehindRadius">20dp</item>
-        <item name="android:windowBlurBehindEnabled">true</item>
     </style>
     <style name="SSs" parent="android:Widget.Material.SearchView">
         <item name="android:closeIcon">@drawable/close</item>
@@ -60,7 +50,7 @@
         <item name="android:goIcon">@drawable/next</item>
     </style>
     <style name="Theme.C" parent="Theme.SS"/>
-    <style name="WTheme.SS.AC" parent="android:Widget.Material.Light.Button.Borderless">
+    <style name="WTheme.SS.AC" parent="android:Widget.Holo.Button.Borderless">
 
         <item name="android:minWidth">50dp</item>
         <item name="android:minHeight">50dp</item>
@@ -75,8 +65,7 @@
 
 
     <style name="SS.KeyboardView" parent="android:Widget">
-        <item name="android:background">?android:colorBackground</item>
-        <item name="android:keyBackground">?android:textColorPrimaryInverseDisableOnly</item>
+        <item name="android:keyBackground">@drawable/full_frame</item>
         <item name="android:keyPreviewLayout">@layout/k_preview</item>
         <item name="android:keyTextSize">22sp</item>
         <item name="android:keyTextColor">?android:textColorPrimary</item>

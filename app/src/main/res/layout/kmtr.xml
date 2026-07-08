@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="-10dp"
+        android:layout_above="@+id/typingCon" />
+    <TextView
+        android:text="Be a first to comment about this!"
+        android:layout_width="match_parent"
+        android:id="@android:id/empty"
+        android:gravity="center"
+        android:visibility="gone"
+        android:drawablePadding="10dp"
+        android:layout_centerInParent="true"
+        android:drawableTop="@drawable/chat"
+        android:layout_height="wrap_content"/>
+
+    <ViewFlipper
+        android:id="@+id/typingCon"
+        android:inAnimation="@*android:anim/lock_screen_behind_enter"
+        android:outAnimation="@*android:anim/lock_screen_exit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/full_frame"
+        android:elevation="5dp"
+        android:layout_margin="10dp">
+        <include layout="@layout/send_con"/>
+        <include layout="@layout/waitres_con"/>
+    </ViewFlipper>
+
+
+</RelativeLayout>

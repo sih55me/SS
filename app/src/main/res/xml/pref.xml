@@ -19,5 +19,23 @@
             android:inputType="numberSigned"
             android:title="Height size" />
     </PreferenceCategory>
+    <MultiSelectListPreference
+        android:defaultValue="@array/addons_idd"
+        android:entries="@array/addons_t"
+        android:entryValues="@array/addons_id"
+        android:key="addons"
+        android:title="Addons" />
+    <MultiSelectListPreference
+        android:entries="@array/ce_t"
+        android:entryValues="@array/ce_id"
+        android:key="configEmbed"
+        android:title="Config project viewer" />
+
+    <cakar.search.preference.NumberPickerPreference
+        android:max="100"
+        android:progress="30"
+        android:key="fps"
+        android:title="Frame per second [FPS]"
+        android:defaultValue="30"/>
 
 </PreferenceScreen>

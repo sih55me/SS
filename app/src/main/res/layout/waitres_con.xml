@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:layout_gravity="bottom"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/sendLay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+
+
+            <ProgressBar
+                style="?android:progressBarStyleLarge"
+                android:layout_marginStart="10dp"
+                android:layout_width="30dp"
+                android:layout_gravity="center_vertical"
+                android:indeterminate="true"
+                android:layout_weight="0"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:maxHeight="100dp"
+                android:gravity="start"
+                android:layout_weight="1"
+                android:hint="Sending to AI.."
+                android:padding="15dp" />
+
+            <ImageButton
+                android:id="@+id/stop"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:src="@drawable/stop"
+                android:tint="@android:color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

@@ -1,23 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:padding="10dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="10dp"
+        android:src="@drawable/history" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="?android:textAppearanceLarge"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:layout_weight="1"
+            android:text="Your search history" />
+
+    </FrameLayout>
+
     <TextView
         android:layout_width="match_parent"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:singleLine="true"
-        android:layout_marginBottom="5dp"
-        android:background="?android:attr/listDivider"
-        android:text="Last time, you searched..."
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:tooltipText="Whoa whoa whoa!!"
+        android:text="Last time, you searched..." />
 
     <ListView
         android:id="@+id/preview"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_height="match_parent" />
 
 
     <View
@@ -28,8 +46,10 @@
 
     <ActionMenuView
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:id="@+id/menu"
+        android:minHeight="50dp"
+        android:layout_gravity="center_vertical|end"
         android:orientation="horizontal"/>
 
 </LinearLayout>

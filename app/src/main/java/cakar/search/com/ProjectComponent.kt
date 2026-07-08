@@ -1,6 +1,7 @@
 package cakar.search.com
 
 import android.util.Log
+import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -42,6 +43,8 @@ class ProjectComponent {
             ins.originstory = s
             try{
                 val ob = JSONObject(s)
+                val  j = Gson()
+                j
                 val target = ob.getJSONArray("targets")
                 for (i in 0 until target.length()) {
                     val item = target.getJSONObject(i) ?: continue
@@ -180,6 +183,7 @@ class ProjectComponent {
             onJson:(String)-> Unit = {}
         ) {
             val pc = ProjectComponent()
+            println("https://projects.scratch.mit.edu/$projectId?token=${token}")
             val request = Request.Builder()
                 .url("https://projects.scratch.mit.edu/$projectId?token=${token}")
                 .addHeader("Accept", "application/json")

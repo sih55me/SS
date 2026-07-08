@@ -119,7 +119,7 @@ class HistorySettings: Fragment() {
 
         bin.menu.menu.apply {
             addSubMenu("Clear").also {
-                it.item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setIcon(android.R.drawable.ic_menu_delete)
+                it.item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setIcon(R.drawable.delete)
                 it.add("Are you sure?").isEnabled = false
                 it.add("Yes, Clear my history").setIcon(R.drawable.check).setOnMenuItemClickListener {
                     val suggestions = SearchRecentSuggestions(

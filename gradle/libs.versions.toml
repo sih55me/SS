@@ -19,6 +19,8 @@ library = "0.2.3"
 picasso = "2.8"
 libraryVersion = "2.4.0"
 daimajiaLibrary = "1.1.5"
+gson = "2.14.0"
+junitJupiter = "5.14.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,6 +42,8 @@ library = { group = "com.linroid.filtermenu", name = "library", version.ref = "l
 picasso = { group = "com.squareup.picasso", name = "picasso", version.ref = "picasso" }
 nineoldandroids-library = { group = "com.nineoldandroids", name = "library", version.ref = "libraryVersion" }
 slider-library = { group = "com.daimajia.slider", name = "library", version.ref = "daimajiaLibrary" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

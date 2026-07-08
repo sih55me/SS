@@ -5,6 +5,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.ActionMode
@@ -23,6 +25,11 @@ import cakar.search.ProjectActivity
 import cakar.search.R
 import cakar.search.databinding.ItemBinding
 import cakar.search.databinding.PinfoBinding
+import coil3.DrawableImage
+import coil3.asImage
+import coil3.load
+import coil3.request.crossfade
+import coil3.request.error
 
 import com.squareup.picasso.Picasso
 
@@ -59,10 +66,19 @@ class Adapter(
         val itemdata = data[position]
         binding.title.text = itemdata.title
         binding.count.text = itemdata.creator
-        Picasso.get()
-            .load(itemdata.thumb)
-            .error(R.drawable.ic_launcher_background)
-            .into(binding.thumbnail)
+        binding.thumbnail.load(
+            itemdata.thumb,
+            builder = {
+                crossfade(true)
+                placeholder(ColorDrawable(Color.BLACK).asImage())
+                this.error(ColorDrawable(Color.BLACK))
+                listener(
+                    onError = {i,o->
+                        o.throwable.printStackTrace()
+                    }
+                )
+            }
+        )
         binding.root.setOnClickListener{
             InfoProDialog().apply {
                 arguments = Bundle().also {

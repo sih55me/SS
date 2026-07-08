@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference android:title="Login"
+        android:key="try"
+        android:icon="@drawable/send"
+        android:persistent="false"/>
+
+
+    <EditTextPreference
+        android:title="Is it safe to login?"
+        android:inputType="none"
+        android:icon="@drawable/info"
+        android:defaultValue="Yes, it's safe to login \n[if you trust this app]"
+        android:persistent="false"/>
+    <Preference
+        android:defaultValue="false"
+        android:persistent="false"
+        android:icon="@drawable/send"
+        android:key="log"
+        android:title="Test saved login" />
+    <Preference
+        android:defaultValue="false"
+        android:icon="@drawable/delete"
+        android:key="logout"
+        android:persistent="false"
+        android:title="Log out" />
+</PreferenceScreen>

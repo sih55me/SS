@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="addons_t">
+        <item>Pause Button</item>
+        <item>Muteable project</item>
+        <item>Sharp stage border</item>
+        <item>Reverse order of project controls</item>
+        <item>Clone counter</item>
+    </string-array>
+
+    <string-array name="addons_id">
+        <item>pause</item>
+        <item>mute-project</item>
+        <item>remove-curved-stage-border</item>
+        <item>editor-buttons-reverse-order</item>
+        <item>clones</item>
+    </string-array>
+
+    <string-array name="addons_idd">
+        <item>pause</item>
+    </string-array>
+
+
+    <string-array name="ce_t">
+        <item>Show Settings button</item>
+        <item>High quality pen</item>
+        <item>Umlimited size</item>
+        <item>limitless</item>
+        <item>Play after load</item>
+        <item>-</item>
+    </string-array>
+
+    <string-array name="ce_id">
+        <item>settings-button</item>
+        <item>hqpen</item>
+        <item>offscreen</item>
+        <item>limitless</item>
+        <item>autoplay</item>
+        <item></item>
+    </string-array>
+
+</resources>

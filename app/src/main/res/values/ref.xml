@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="SeekbarPreference">
+        <attr format="integer" name="android:progress"/>
+        <attr format="integer" name="android:max"/>
+    </declare-styleable>
+
+
+</resources>
