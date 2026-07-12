@@ -1,14 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="360dp"
+    android:layout_height="wrap_content"
+    android:elevation="5dp"
+    android:scaleY="0.77"
+    android:transformPivotX="1dp"
+    android:scaleX="0.77"
+    android:background="@drawable/dialog_menu_frame"
     android:orientation="vertical">
+    <Toolbar
+        style="?android:toolbarStyle"
+        android:layout_width="match_parent"
+        android:id="@android:id/title"
+        android:layout_height="match_parent"/>
+    <FrameLayout
+        android:id="@+id/key"
+        android:layout_gravity="center"
+        android:elevation="5dp"
+        android:layout_weight="1"
+        android:visibility="visible"
+        android:layout_margin="5dp"
+        android:minWidth="160dp"
+        android:minHeight="160dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <LinearLayout
         android:background="@drawable/full_frame"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:layout_margin="5dp"
         android:minWidth="100dp"
+        android:visibility="gone"
         android:backgroundTint="?android:colorAccent"
         android:orientation="horizontal">
 
@@ -27,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Keyboard" />
+            android:text="Profile" />
         <ImageButton
             android:id="@+id/more"
             android:tint="?android:textColorPrimaryInverse"
@@ -41,15 +63,7 @@
     </LinearLayout>
 
 
-    <android.inputmethodservice.KeyboardView
-        android:id="@+id/key"
-        android:layout_gravity="center"
-        style="@style/SS.KeyboardView"
-        android:background="@null"
-        android:visibility="visible"
-        android:layout_margin="5dp"
-        android:layout_width="360dp"
-        android:layout_height="360dp"/>
+
 
 
 

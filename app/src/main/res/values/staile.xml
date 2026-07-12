@@ -7,7 +7,7 @@
         <item name="android:titleTextAppearance">@android:style/TextAppearance.Material.Large</item>
         <item name="android:subtitleTextAppearance">@android:style/TextAppearance.Material.Small</item>
         <item name="android:paddingStart">0dp</item>
-        <item name="android:paddingEnd">0dp</item>
+        <item name="android:paddingEnd">4dp</item>
         <item name="android:contentInsetStart">0dp</item>
         <item name="android:contentInsetEnd">0dp</item>
         <item name="android:popupMenuStyle">@style/Widget.Notds.PopupMenu</item>
@@ -15,10 +15,9 @@
     </style>
     <style name="Widget.Notds.ActionMode" parent="android:Widget.Material.ActionMode">
         <item name="android:paddingStart">0dp</item>
-        <item name="android:paddingEnd">0dp</item>
+        <item name="android:paddingEnd">4dp</item>
         <item name="android:popupMenuStyle">@style/Widget.Notds.PopupMenu</item>
         <item name="android:contentInsetEnd">0dp</item>
-        <item name="android:contentInsetStart">0dp</item>
     </style>
     <style name="Widget.Notds.Actionbar" parent="@android:style/Widget.Material.ActionBar">
         <item name="android:titleTextAppearance">@null</item>
@@ -28,14 +27,12 @@
     </style>
 
     <style name="Widget.Notds.ActionButton.CloseMode" parent="android:Widget.Material.ActionButton.CloseMode">
-        <item name="android:paddingStart">5dp</item>
-        <item name="android:layout_marginStart">4dp</item>
-        <item name="android:minWidth">48dp</item>
-
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_marginRight">20dp</item>
     </style>
     <style name="Widget.Notds.ActionButton.Overflow" parent="android:Widget.Material.ActionButton.Overflow">
-        <item name="android:padding">0dp</item>
-        <item name="android:minWidth">48dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">00dp</item>
         <item name="android:src">@drawable/more</item>
     </style>
 

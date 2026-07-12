@@ -8,4 +8,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="holo_icon_in_dark_theme">#8c8d8e</color>
+
+    <color name="bg">#09091D</color>
+    <color name="colorBtn">#1F1F61</color>
+    <color name="colorAccentN">#FFBB86FC</color>
+    <color name="colorPrimaryN">#1F1F61</color>
+    <color name="colorPrimaryDN">#1F1F61</color>
 </resources>

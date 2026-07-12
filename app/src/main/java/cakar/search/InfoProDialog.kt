@@ -1,76 +1,51 @@
 package cakar.search
 
-import android.app.ActionBar
-import android.app.Activity
-import android.app.AlertDialog
 import android.app.AlertDialog.Builder
+import android.app.Dialog
 import android.app.DialogFragment
+import android.app.FragmentManager
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.text.util.Linkify
+import android.view.ActionMode
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.TabHost
-import android.widget.Toast
-import android.app.Dialog
-import android.app.Fragment
-import android.app.FragmentTransaction
-import android.app.ListFragment
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.net.Uri
-import android.os.Message
-import android.text.Editable
-import android.text.TextWatcher
-import android.text.util.Linkify
-import android.transition.Explode
-import android.transition.Fade
-import android.transition.Transition
-import android.util.Log
-import android.view.ActionMode
-import android.view.ContextThemeWrapper
-import android.view.MenuInflater
-import android.view.Window
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.PopupMenu
-import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.ViewFlipper
-import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
-import cakar.search.Akun.LogResult
 import cakar.search.MainActivity.Companion.downloadSmthUri
-import cakar.search.com.ProjectComponent
-import cakar.search.databinding.PinfoBinding
 import cakar.search.databinding.ProjectviewBinding
 import cakar.search.filetype.Komentar
 import cakar.search.filetype.Project
 import cakar.search.wtbcore.PreviewImgPage
-import coil3.asImage
 import coil3.load
 import coil3.request.crossfade
-import coil3.request.placeholder
 import coil3.request.transformations
 import coil3.transform.RoundedCornersTransformation
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-
-import com.squareup.picasso.Picasso
 import io.noties.markwon.Markwon
 import io.noties.markwon.core.CorePlugin
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
@@ -83,12 +58,10 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-import kotlin.collections.iterator
+import java.util.logging.Handler
 
 class InfoProDialog()  : DialogFragment(){
     var itemdata : Project? = null
@@ -96,7 +69,7 @@ class InfoProDialog()  : DialogFragment(){
     private var isTabReady = false
 
 
-    val pb by lazy { ProjectviewBinding.inflate(LayoutInflater.from(ContextThemeWrapper(context, R.style.Theme_SS_ProPre))) }
+    val pb by lazy { ProjectviewBinding.inflate(LayoutInflater.from(ContextThemeWrapper(context, R.style.Theme_Notds_AltTab))) }
     override fun onCreateView(
         inflater: LayoutInflater?,
         container: ViewGroup?,
@@ -106,7 +79,7 @@ class InfoProDialog()  : DialogFragment(){
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
-        return object : Dialog(context, R.style.Theme_SS_ProPre){
+        return object : Dialog(context, R.style.Theme_Notds_AltTab){
             init {
                 window!!.setWindowAnimations(android.R.style.Animation_InputMethod)
                 window!!.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
@@ -122,6 +95,22 @@ class InfoProDialog()  : DialogFragment(){
 
                 }
 
+            }
+
+            override fun onBackPressed() {
+
+                val fragmentManager: FragmentManager = childFragmentManager
+                modeClose()
+                if (!fragmentManager.isStateSaved() && fragmentManager.popBackStackImmediate()) {
+                    if(
+                        (fragmentManager.backStackEntryCount==0)&&
+                        pb.root.displayedChild == 1
+                        ){
+                        pb.root.displayedChild = 0
+                    }
+                    return
+                }
+                super.onBackPressed()
             }
 
             override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -229,8 +218,17 @@ class InfoProDialog()  : DialogFragment(){
                     add("Comment")
                         ?.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                         ?.setOnMenuItemClickListener {
-                            modeOpen()
-                            view?.startActionMode(kom)
+                            r().also {f->
+                                Bundle().also {
+                                    it.putInt("id", itemdata?.id?:0)
+                                    it.putString("usr", itemdata?.creator)
+                                    f.arguments = it
+                                }
+                            }.let {
+                                modeOpen()
+                                childFragmentManager.beginTransaction().add(R.id.swl,it, "komen").addToBackStack(null).setReorderingAllowed(true).setBreadCrumbTitle("Comment").commit()
+                                pb.root.postDelayed({ pb.root.showNext() },600L)
+                            }
                             true
                         }
                     add("Learn more").setOnMenuItemClickListener {
@@ -293,28 +291,16 @@ class InfoProDialog()  : DialogFragment(){
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         dialog?.setTitle(null)
         super.onViewCreated(view, savedInstanceState)
-        fun loadComment(){
-            if(savedInstanceState==null){
-                childFragmentManager.beginTransaction().add(R.id.swl, r().also {f->
-                    Bundle().also {
-                        it.putInt("id", itemdata?.id?:0)
-                        it.putString("usr", itemdata?.creator)
-                        f.arguments = it
-                    }
-                }, "komen").commit()
-            }
-        }
+
 
         if(savedInstanceState?.getParcelable<Project>("p") != null){
             itemdata = savedInstanceState?.getParcelable("p")
             setup()
-            loadComment()
             return
         }
         if(arguments?.getParcelable<Project>("p") != null){
             itemdata = arguments?.getParcelable("p")
             setup()
-            loadComment()
             return
         }
         if(arguments?.getInt("id") != null){
@@ -327,7 +313,6 @@ class InfoProDialog()  : DialogFragment(){
                 s.getProject(arguments?.getInt("id") ?: 0) {
                     itemdata = it
                     setup()
-                    loadComment()
                 }
             }
             return
@@ -343,29 +328,17 @@ class InfoProDialog()  : DialogFragment(){
     fun notfound(reason: String = ""){
         view?.startActionMode(object: ActionMode.Callback{
 
-            lateinit var t : Thread
+
 
 
             override fun onCreateActionMode(
                 a: ActionMode?,
                 p1: Menu?
             ): Boolean {
-                t = Thread{
-                    while (Thread.interrupted().not()){
-                        try{
-                            activity.runOnUiThread {
-                                if(reason == "nfa") {
-                                    a?.setTitle("Generator error!!")
-                                }else{
-                                    a?.setTitle("Abnormal result!!")
-                                }
-                            }
-                            Thread.sleep(1000L)
-                            activity.runOnUiThread { a?.setTitle("") }
-                            Thread.sleep(1000L)
-                        }catch (_: Exception){}
-
-                    }
+                if(reason == "nfa") {
+                    a?.setTitle("Generator error!!")
+                }else{
+                    a?.setTitle("Abnormal result!!")
                 }
                 p1?.add(0,0,2,"Close")!!.setIcon(R.drawable.close).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setOnMenuItemClickListener {
                     this@InfoProDialog.dismiss()
@@ -378,7 +351,6 @@ class InfoProDialog()  : DialogFragment(){
                 a: ActionMode?,
                 p1: Menu?
             ): Boolean{
-                t.start()
                 return true
             }
 
@@ -388,13 +360,16 @@ class InfoProDialog()  : DialogFragment(){
             )=false
 
             override fun onDestroyActionMode(p0: ActionMode?) {
-                t.interrupt()
+
             }
 
         })
     }
 
     private fun setup(){
+        if(context == null){
+            return
+        }
         val m = Markwon
             .builder(context)
             .usePlugin(CorePlugin.create())
@@ -475,7 +450,7 @@ class InfoProDialog()  : DialogFragment(){
                 crossfade(true)
             }
             pb.thumbnail.setOnClickListener {
-                it.showContextMenu()
+                it.showContextMenu(it.x,it.y)
             }
             pb.thumbnail.setOnCreateContextMenuListener { menu, view, info ->
                 menu.add("Look").setOnMenuItemClickListener {
@@ -517,7 +492,7 @@ class InfoProDialog()  : DialogFragment(){
 
 
 
-    class r() : Fragment(){
+    class r() : DialogFragment(){
 
         val f :Akun.Client get()=Akun.Client.I
 
@@ -561,15 +536,41 @@ class InfoProDialog()  : DialogFragment(){
                 if(j != null){
                     view.findViewById<TextView>(android.R.id.text1)?.setText(j.usr)
                     m.setMarkdown(view.findViewById<TextView>(android.R.id.text2), j.komentar)
-                    view.findViewById<ImageView>(android.R.id.icon).setImageResource(R.drawable.user)
+                    val ic = view.findViewById<ImageView>(android.R.id.icon)
+                    ic.imageTintList = null
+                    ic.setPadding(0,0,0,0)
+                    ic.setBackgroundDrawable(null)
+                    ic.load(j.usrThumb)
                     val i = Intent(context, PP::class.java)
                     i.putExtra("user", j.usr)
-                    view.setOnCreateContextMenuListener { menu, view, info ->
+                    view.setOnLongClickListener {
+                        val pm = PopupMenu(activity, ic)
+                        val menu = pm.menu
                         menu.add("Visit ${j.usr}").intent = i
                         menu.add("Copy comment").setOnMenuItemClickListener {
                             val c = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             c.setPrimaryClip(ClipData.newPlainText("scratch comment", j.komentar))
                             true
+                        }
+                        if(j.origin.has("reply_count")){
+                            if(j.origin.optInt("reply_count",0)>=1){
+                                menu.add("Peek reply").setOnMenuItemClickListener {
+                                    r().also {f->
+                                        Bundle().also {
+                                            f.arguments = this@r.arguments.clone() as Bundle
+                                            f.arguments.putInt("comid", j.id)
+                                        }
+                                    }.let{
+                                        fragmentManager.beginTransaction()
+                                            .hide(this@r)
+                                            .add(R.id.swl, it, "komen")
+                                            .addToBackStack(null)
+                                            .setReorderingAllowed(true)
+                                            .setBreadCrumbTitle("Reply of ${j.usr}").commit()
+                                    }
+                                    true
+                                }
+                            }
                         }
                         menu.add("Delete").setOnMenuItemClickListener {
                             val request = okhttp3.Request.Builder()
@@ -602,6 +603,11 @@ class InfoProDialog()  : DialogFragment(){
                             })
                             true
                         }
+                        pm.show()
+                        true
+                    }
+                    ic.setOnClickListener {
+                        view.performLongClick()
                     }
                 }
 
@@ -637,10 +643,24 @@ class InfoProDialog()  : DialogFragment(){
 
             val send = findViewById<View>(R.id.send)
             val typco = findViewById<ViewFlipper>(R.id.typingCon)
+
             findViewById<View>(R.id.add).setOnClickListener {
                 PopupMenu(context, it).also {
                     val menu = it.menu
-                    menu.add("-Coming soon-").setEnabled(false)
+                    menu.add("Reload").setOnMenuItemClickListener {
+                        forceLoad()
+                        true
+                    }
+                    menu.add("Load more").setOnMenuItemClickListener {
+                        offset = offset + 20
+                        Search(activity).fetchCommentFromProject(
+                            Pair(arguments.getString("usr").orEmpty(),arguments.getInt("id")?:0), offset = offset
+                        ) {
+                            ms.add(it)
+                            ad.notifyDataSetChanged()
+                        }
+                        true
+                    }
                 }.show()
             }
             typco.displayedChild = 0
@@ -652,8 +672,13 @@ class InfoProDialog()  : DialogFragment(){
 
                     if (prompt.isEmpty()) return@setOnClickListener
                     val json = JSONObject()
-                        .put("content", prompt)
-                        .put("parent_id", JSONObject.NULL)
+                        .put("content", prompt) .also{
+                            if(arguments.getInt("comid")!=0){
+                                it.put("parent_id", arguments.getInt("comid"))
+                            }else{
+                                it.put("parent_id", JSONObject.NULL)
+                            }
+                        }
                         .put("commentee_id", JSONObject.NULL)
                         .toString()
 
@@ -705,12 +730,12 @@ class InfoProDialog()  : DialogFragment(){
                                     if(j.has("rejected")){
                                         this@o.post {
                                             when(j.optString("rejected")){
-                                                "isFlood"-> "Are you spamming too many comment before 1 minute?"
-                                                "isSpam"-> "Are you spamming too many comment?"
-                                                "isEmpty"-> "Did you just almost send a bullshit comment?"
-                                                "isBad" -> "Ehm ehm"
-                                                "isUnconstructive" -> "Ehm ehm, what's that??"
-                                                "hasChatSite" -> "Suspicious link, \nonly scratch link are allow"
+                                                "isFlood"-> "You spamming too many comment under 1 second"
+                                                "isSpam"-> "You spamming too many comment"
+                                                "isEmpty"-> "Invalid text"
+                                                "isBad" -> "Don't send a bad stuff plz"
+                                                "isUnconstructive" -> "Don't send a bad stuff plz"
+                                                "hasChatSite" -> "Suspicious link"
                                                 "isDisallowed" -> "Author disable the comment in this project. \nContact the author in another way."
                                                 "isTooLong"->"ARE YOU MAKING A DIARY??"
                                                 "isMuted" -> "You're ground to NOT COMMENT"
@@ -789,15 +814,19 @@ class InfoProDialog()  : DialogFragment(){
             }
         }
 
-        internal fun forceLoad(){
-            ms.clear()
-            ad.notifyDataSetChanged()
-            Search(activity).fetchCommentFromProject(
-                Pair(arguments.getString("usr").orEmpty(),arguments.getInt("id")?:0)
-            ) {
+        var offset = 0
+
+        internal fun forceLoad(clearFirst:Boolean = true){
+            if(clearFirst){
+                ms.clear()
+                ad.notifyDataSetChanged()
+            }
+            val e = fun(it:Komentar) {
                 ms.add(it)
                 ad.notifyDataSetChanged()
             }
+
+            Search(activity).fetchCommentFromProject(Pair(arguments.getString("usr").orEmpty(),arguments.getInt("id")), fromComment = arguments.getInt("comid"), onGet = e)
         }
 
 

@@ -305,7 +305,7 @@ class ProjectActivity : Activity() {
 
     override fun onCreateDialog(id: Int): Dialog? {
         if(id == 0){
-            val d= KeyHelper(ContextThemeWrapper(this, 0), bin.main)
+            val d= KeyHelper(this, bin.main)
             d.setOwnerActivity(this)
             d.setOnDismissListener {
                 removeDialog(id)

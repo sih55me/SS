@@ -48,7 +48,7 @@ class InfoStuDialog()  : DialogFragment(){
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
-        return object : Dialog(context, R.style.Theme_SS_ProPre){
+        return object : Dialog(context, R.style.Theme_Notds_AltTab){
             init {
                 window!!.requestFeature(Window.FEATURE_NO_TITLE)
                 window!!.setWindowAnimations(android.R.style.Animation_InputMethod)
@@ -255,8 +255,6 @@ class InfoStuDialog()  : DialogFragment(){
                 .placeholder(resources.getColor(android.R.color.background_dark).toDrawable())
                 .error(resources.getColor(android.R.color.holo_red_light).toDrawable())
                 .into(pb.thumbnail)
-
-            pb.amenu.popupTheme = R.style.WTheme_SS_Pop
             pb.amenu.menu.also {menu->
                 fun Menu.opt(){
                     apply {

@@ -27,7 +27,7 @@ import cakar.search.databinding.KeyboardBinding
 import cakar.search.databinding.KysttBinding
 
 
-class KeyHelper(private val a: Context, val v : WebView) : Dialog(a, R.style.Theme_SS_Pro), KeyboardView.OnKeyboardActionListener {
+class KeyHelper(private val a: Context, val v : WebView) : Dialog(a), KeyboardView.OnKeyboardActionListener {
 
     private val binding by lazy { KeyboardBinding.inflate(layoutInflater) }
     private val setbin by lazy { KysttBinding.inflate(layoutInflater) }
@@ -107,7 +107,7 @@ class KeyHelper(private val a: Context, val v : WebView) : Dialog(a, R.style.The
         window!!.setDimAmount(0F)
         keyboard = Keyboard(a, R.xml.keyjs)
         keyboardView.keyboard = keyboard
-        val morePopup = Dialog(a, R.style.Theme_SS_Pro)
+        val morePopup = Dialog(a)
         if(ownerActivity != null){
             window!!.decorView.systemUiVisibility = ownerActivity!!.window!!.decorView.systemUiVisibility
             morePopup.window!!.decorView.systemUiVisibility = ownerActivity!!.window!!.decorView.systemUiVisibility

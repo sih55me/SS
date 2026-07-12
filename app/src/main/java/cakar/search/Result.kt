@@ -85,6 +85,10 @@ class Result : Activity() {
         }
     }
 
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
     val st by lazy {
         SearcT(this)
     }
@@ -215,6 +219,8 @@ class Result : Activity() {
                 }
             }
         }
+
+
 
         fun sP(){
             binding.tabstu.adapter = sadap

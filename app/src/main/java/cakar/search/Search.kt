@@ -439,13 +439,18 @@ class Search(private val activity : Activity) {
          *
          * Second = project id
          */
-        data:Pair<String,Int>,
+        data:Pair<String,Int> =Pair("",0),
         offset:Int = 0,
+        fromComment:Int=0,
         onGet : ((Komentar) -> Unit)={}
     ){
 
 
-        val urlT = "https://api.scratch.mit.edu/users/${data.first}/projects/${data.second}/comments?limit=$limitGet&offset=${offset}"
+        var urlT = "https://api.scratch.mit.edu/users/${data.first}/projects/${data.second}/comments"
+        if(fromComment !=0){
+            urlT += "/$fromComment/replies"
+        }
+        urlT = "$urlT?limit=$limitGet&offset=${offset}"
         val stringRequest = StringRequest(Request.Method.GET, urlT, {
             resultF = it
             try {
@@ -464,6 +469,7 @@ class Search(private val activity : Activity) {
                         item.getString("content"),
                         Pair(item.getString("datetime_created"), item.getString("datetime_modified"))
                     )
+                    k.origin = item
                     onGet.invoke(k)
                 }
             } catch (e: JSONException) {

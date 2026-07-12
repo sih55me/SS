@@ -39,6 +39,7 @@ import android.view.MenuInflater
 import android.view.ViewGroup
 import android.view.Window
 import android.view.animation.BounceInterpolator
+import android.widget.ProgressBar
 import android.window.BackEvent
 import android.window.OnBackAnimationCallback
 import android.window.OnBackInvokedCallback
@@ -383,7 +384,7 @@ class PP: Activity(), FragmentManager.OnBackStackChangedListener {
         }
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
-            return object : Dialog(activity, R.style.Theme_SS_ProPre){
+            return object : Dialog(activity, R.style.Theme_Notds_AltTab){
                 init {
                     window!!.setWindowAnimations(android.R.style.Animation_InputMethod)
                     window!!.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
@@ -586,76 +587,94 @@ class PP: Activity(), FragmentManager.OnBackStackChangedListener {
 
         override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
+
             val se = Search(activity)
+            val lolod = object: ActionMode.Callback{
+                val p = ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal)
+                override fun onCreateActionMode(
+                    p0: ActionMode?,
+                    p1: Menu?
+                ): Boolean {
+                    p.isIndeterminate = true
+                    if(p.parent ==null){
+                        p0?.customView = p
+                    }
+
+                    return true
+                }
+
+                override fun onPrepareActionMode(
+                    p0: ActionMode?,
+                    p1: Menu?
+                )=false
+
+                override fun onActionItemClicked(
+                    p0: ActionMode?,
+                    p1: MenuItem?
+                )=false
+
+                override fun onDestroyActionMode(p0: ActionMode?) {
+                    se?.cancelAll()
+                }
+
+            }
             setHasOptionsMenu(true)
             se.token = activity.intent.getStringExtra("tkn")?:""
-            val e = ProgressDialog(activity)
-            e.apply{
-                isIndeterminate =  true
-                setProgressStyle(ProgressDialog.STYLE_SPINNER)
-                setMessage("Loading user data")
-                setOnDismissListener {
-                    se.cancelAll()
-                }
-                setCanceledOnTouchOutside(false)
-                setCancelable(false)
-            }
-            se.onError = {
-                if(it == -1.0){
-                    bin.root.animate().alpha(0F)
-                    object : AlertDialog(activity){
-                        val tps = "If username that you'd enter is typo, type correctly."
-                        var mo = 0
-                        init {
-                            setCanceledOnTouchOutside(false)
-                            setIconAttribute(android.R.attr.alertDialogIcon)
-                            setTitle("User not found")
-                            setButton2("Go back"){_,_->activity?.finish()}
-                            setMessage(tps)
-                            setButton("Logs"){_,_->}
-                        }
 
-                        override fun onBackPressed() {
-                            if(mo == 1){
-                                getButton(DialogInterface.BUTTON_POSITIVE)?.callOnClick()
-                            }else{
-                                dismiss()
-                                activity?.finish()
-                            }
-                        }
 
-                        override fun onCreate(savedInstanceState: Bundle?) {
-                            super.onCreate(savedInstanceState);
 
-                            val m = findViewById<TextView>(android.R.id.message)
-                            m?.apply {
-                                setTextIsSelectable(true)
-                            }
-                            getButton(DialogInterface.BUTTON_POSITIVE)?.setOnClickListener {
-                                if(m == null)return@setOnClickListener
-                                if(mo == 0){
-                                    mo = 1
-                                    m.text = se.reason
-                                }else{
-                                    mo = 0
-                                    m.text = tps
-                                }
-                            }
-                        }
-                    }.show()
-                    if (e.isShowing) {
-                        e.dismiss()
-                    }
-                }
-            }
 
 
             fun s(){
-                e.show()
-                se.getUser(u) { d ->
-                    if(e.isShowing){
-                        e.dismiss()
+                val e = view?.startActionMode(lolod)
+                se.onError = {
+                    if(it == -1.0){
+                        bin.root.animate().alpha(0F)
+                        object : AlertDialog(activity){
+                            val tps = "If username that you'd enter is typo, type correctly."
+                            var mo = 0
+                            init {
+                                setCanceledOnTouchOutside(false)
+                                setIconAttribute(android.R.attr.alertDialogIcon)
+                                setTitle("User not found")
+                                setButton2("Go back"){_,_->activity?.finish()}
+                                setMessage(tps)
+                                setButton("Logs"){_,_->}
+                            }
+
+                            override fun onBackPressed() {
+                                if(mo == 1){
+                                    getButton(DialogInterface.BUTTON_POSITIVE)?.callOnClick()
+                                }else{
+                                    dismiss()
+                                    activity?.finish()
+                                }
+                            }
+
+                            override fun onCreate(savedInstanceState: Bundle?) {
+                                super.onCreate(savedInstanceState);
+
+                                val m = findViewById<TextView>(android.R.id.message)
+                                m?.apply {
+                                    setTextIsSelectable(true)
+                                }
+                                getButton(DialogInterface.BUTTON_POSITIVE)?.setOnClickListener {
+                                    if(m == null)return@setOnClickListener
+                                    if(mo == 0){
+                                        mo = 1
+                                        m.text = se.reason
+                                    }else{
+                                        mo = 0
+                                        m.text = tps
+                                    }
+                                }
+                            }
+                        }.show()
+
                     }
+                }
+                se.getUser(u) { d ->
+                    e?.finish()
                     p = d
                     d(p)
                 }
@@ -696,6 +715,8 @@ class PP: Activity(), FragmentManager.OnBackStackChangedListener {
             onBackStackChanged()
         }
 
+
+
     }
 
 
@@ -706,13 +727,13 @@ class PP: Activity(), FragmentManager.OnBackStackChangedListener {
         if(fragmentManager.backStackEntryCount >= 1){
             val baseB = OnBackInvokedCallback{
                 fun backF(){
-
-                    if(fragmentManager.popBackStackImmediate().not()){
-                        return
+                    fragmentManager.popBackStackImmediate()
+                    if(fragmentManager.backStackEntryCount ==0){
+                        try{
+                            onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBack as OnBackInvokedCallback)
+                        }catch (_: Exception){}
                     }
-                    try{
-                        onBackInvokedDispatcher.unregisterOnBackInvokedCallback(onBack as OnBackInvokedCallback)
-                    }catch (_: Exception){}
+
                 }
                 backF()
 
@@ -721,6 +742,7 @@ class PP: Activity(), FragmentManager.OnBackStackChangedListener {
 //            onBack = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)object: OnBackAnimationCallback{
 //                override fun onBackInvoked() {
 //                    baseB.onBackInvoked()
+//                    findViewById<View>(android.R.id.content).animate().scaleX(1F).scaleY(1F).translationX(0F)
 //                }
 //
 //                override fun onBackCancelled() {
@@ -763,7 +785,7 @@ class PP: Activity(), FragmentManager.OnBackStackChangedListener {
                 false
             }
         }
-        return super.onCreateOptionsMenu(menu)
+        return true
     }
 
 

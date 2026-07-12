@@ -7,12 +7,15 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import kotlin.Pair;
 
 public class Komentar implements Parcelable {
 
-    Object id;
-     String usr;
+    int id;
+    String usr;
 
     String usrThumb;
     String komentar;
@@ -24,7 +27,7 @@ public class Komentar implements Parcelable {
     Pair<String,String> dates;
 
 
-    public Object getId() {
+    public int getId() {
         return id;
     }
 
@@ -35,13 +38,16 @@ public class Komentar implements Parcelable {
     public String getKomentar() {
         return komentar;
     }
+    public String getUsrThumb() {
+        return usrThumb;
+    }
 
     public Pair<String, String> getDates() {
         return dates;
     }
 
 
-    public Komentar(Object id, String usr, String usrThumb, String komentar, Pair<String, String> dates) {
+    public Komentar(int id, String usr, String usrThumb, String komentar, Pair<String, String> dates) {
         this.id = id;
         this.usr = usr;
         this.usrThumb = usrThumb;
@@ -50,9 +56,15 @@ public class Komentar implements Parcelable {
     }
 
     protected Komentar(Parcel in) {
+        id = in.readInt();
         usr = in.readString();
         komentar = in.readString();
         dates = new Pair<>(in.readString(), in.readString());
+        try {
+            origin = new JSONObject(in.readString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public static final Creator<Komentar> CREATOR = new Creator<Komentar>() {
@@ -69,14 +81,19 @@ public class Komentar implements Parcelable {
 
     @Override
     public int describeContents() {
-        return 0;
+        return Parcelable.CONTENTS_FILE_DESCRIPTOR;
     }
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(usr);
         dest.writeString(komentar);
         dest.writeString(dates.getFirst());
         dest.writeString(dates.getSecond());
+        dest.writeString(origin.toString());
     }
+
+
+    public JSONObject origin = new JSONObject();
 }

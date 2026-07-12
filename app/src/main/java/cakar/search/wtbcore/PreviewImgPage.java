@@ -105,7 +105,7 @@ public class PreviewImgPage extends Dialog {
         if(asDialog){
             return 0;
         }
-        return R.style.Theme_SS_ProPre;
+        return R.style.Theme_Notds_AltTab;
     }
 
 

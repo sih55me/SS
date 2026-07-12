@@ -2,6 +2,7 @@ package cakar.search
 
 
 import android.app.Activity
+import android.app.ActivityGroup
 import android.app.AlertDialog
 import android.app.Dialog
 import android.app.DownloadManager
@@ -26,19 +27,25 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.BaseAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
+import android.widget.PopupMenu
+import android.widget.PopupWindow
 import android.widget.SearchView
 import android.widget.SimpleAdapter
 import android.widget.TextView
 import android.widget.Toast
 import android.window.OnBackInvokedCallback
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import cakar.search.InfoProDialog.r
 import cakar.search.adapter.Adapter
 import cakar.search.databinding.ActivityMainBinding
+import cakar.search.databinding.PonmiBinding
 import cakar.search.filetype.Project
 import cakar.search.ste.Settings
 import coil3.load
@@ -54,7 +61,7 @@ import org.json.JSONObject
 import kotlin.collections.iterator
 
 
-class MainActivity : Activity() {
+class MainActivity : ActivityGroup() {
 
     private val adap by lazy{ Adapter(this, arrayListOf()) }
     private lateinit var binding: ActivityMainBinding
@@ -243,26 +250,17 @@ class MainActivity : Activity() {
         }else {
             Toast.makeText(this, "Try search to show it!!", Toast.LENGTH_SHORT).show()
         }
-        binding.usrcard.setOnCreateContextMenuListener { menu, view, info ->
-            menu.add("Visit").setEnabled(signedIn).setOnMenuItemClickListener {
-                val b = intent.getBundleExtra("login")?:Bundle.EMPTY
-                val i = Intent(this, PP::class.java)
-                i.putExtra("user", b.getString("username"))
-                i.putExtra("tkn", b.getString("token"))
+        binding.usrcard.setOnLongClickListener {
+            val b = intent.getBundleExtra("login")?:Bundle.EMPTY
+            val i = Intent(this, PP::class.java)
+            i.putExtra("user", b.getString("username"))
+            i.putExtra("tkn", b.getString("token"))
 
-                startActivity(i)
-                true
-            }
-            menu.add("My project").setEnabled(signedIn).setOnMenuItemClickListener {
-                val bk = PP.HisProjects()
-                val b = intent.getBundleExtra("login")?:Bundle.EMPTY
-                bk.u = b.getString("username").orEmpty()
-                bk.show(fragmentManager, "flsa")
-                true
-            }
+            startActivity(i)
+            true
         }
         binding.usrcard.setOnClickListener {
-            it.showContextMenu(it.x,it.y)
+            it.performLongClick(it.x,it.y)
         }
 
     }
@@ -470,7 +468,7 @@ class MainActivity : Activity() {
 
     override fun onCreateDialog(id: Int, args: Bundle?): Dialog? {
         if(id == 0x01){
-            return object :Dialog(this, R.style.Theme_C){
+            return object :Dialog(this, R.style.Theme_Notds_Search){
 
 
                 var ms = JSONArray()
@@ -595,13 +593,15 @@ class MainActivity : Activity() {
 
                 override fun onCreateOptionsMenu(menu: Menu): Boolean {
                     menu.add(0,0,2,"Close").setIcon(R.drawable.close).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setOnMenuItemClickListener {
-                        dismissDialog(id)
+                        removeDialog(id)
                         true
                     }
-                    menu.add(0,0,1,"Reload").setIcon(R.drawable.refresh).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setOnMenuItemClickListener {
+                    menu.add(0,0,1,"Reload").setIcon(R.drawable.refresh).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setOnMenuItemClickListener {i->
+                        i.setEnabled(false)
                         seaCore.getMessageFromUser(
-                            args?.getString("usr", "").orEmpty()
+                            args?.getString("username", "").orEmpty()
                         ) {
+                            i.setEnabled(true)
                             ms = it
                             ad.notifyDataSetChanged()
                         }
