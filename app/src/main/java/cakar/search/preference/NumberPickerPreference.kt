@@ -19,6 +19,8 @@ import cakar.search.R
 class NumberPickerPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null): DialogPreference(context, attrs) {
 
 
+
+
     var min = 0
     private val change = object: SeekBar.OnSeekBarChangeListener{
         override fun onProgressChanged(
@@ -56,10 +58,23 @@ class NumberPickerPreference @JvmOverloads constructor(context: Context, attrs: 
 
     var max = 1
 
+    private var defValue = 0
+
     init {
         val ta: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.SeekbarPreference)
         now = ta.getInt(R.styleable.SeekbarPreference_android_progress, 0)
         max = ta.getInt(R.styleable.SeekbarPreference_android_max, 1)
+        try{
+            defValue = ta.getInt(
+                context.resources.getIdentifier(
+                    "Preference_defaultValue",
+                    "styleable",
+                    "com.android.internal"
+                ), 1
+            )
+        }catch (_: Exception){
+
+        }
         ta.recycle()
     }
 
@@ -85,16 +100,25 @@ class NumberPickerPreference @JvmOverloads constructor(context: Context, attrs: 
 
 
     override fun onCreateDialogView(): View {
-        return LayoutInflater.from(context).inflate(R.layout.volume_layout, null)
+        return LayoutInflater.from(context).inflate(R.layout.prefslider, null)
     }
 
     override fun onBindDialogView(view: View?) {
         super.onBindDialogView(view)
-        view?.findViewById<ImageView>(R.id.icon)?.setImageDrawable(icon)
         view?.findViewById<TextView>(R.id.info)?.setText("$now / $max")
-        val s = view?.findViewById<View>(R.id.volumeseek)
+        val s = view?.findViewById<View>(R.id.seekBar)
+
         if(s is SeekBar) {
             s.apply {
+                view?.findViewById<View>(R.id.plus)?.setOnClickListener {
+                    progress += 10
+                }
+                view?.findViewById<View>(R.id.minus)?.setOnClickListener {
+                    progress -= 10
+                }
+                view?.findViewById<View>(R.id.reset)?.setOnClickListener {
+                    progress = defValue
+                }
                 setOnSeekBarChangeListener(change)
                 val prmi = this@NumberPickerPreference.min
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
