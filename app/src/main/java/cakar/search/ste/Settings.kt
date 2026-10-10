@@ -4,6 +4,7 @@ import android.app.FragmentManager
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceActivity
+import android.view.Menu
 import android.view.MenuItem
 import android.window.OnBackInvokedCallback
 import android.window.OnBackInvokedDispatcher
@@ -15,7 +16,7 @@ class Settings: PreferenceActivity() {
 
 
 
-
+    val ng by lazy { Ngatur(this) }
     val onBackFrag = object : FragmentManager.OnBackStackChangedListener{
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         val onBackInvokedCallback : OnBackInvokedCallback= {
@@ -40,6 +41,16 @@ class Settings: PreferenceActivity() {
             }
         }
 
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.add("opt new project preview")!!.setCheckable(true).setChecked(ng.getBoolean("optnpp", false)).setOnMenuItemClickListener {
+            ng.edit().putBoolean("optnpp",it.isChecked.not()).apply()
+            invalidateOptionsMenu()
+            true
+        }
+        return super.onCreateOptionsMenu(menu)
     }
 
 

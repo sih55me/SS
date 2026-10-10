@@ -28,14 +28,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Keyboard" />
+
         <ImageButton
             android:id="@+id/more"
-            android:tint="?android:textColorPrimaryInverse"
-            android:background="?android:selectableItemBackgroundBorderless"
             android:layout_width="35dp"
-            android:rotation="-90"
             android:layout_height="match_parent"
-            android:src="@drawable/prefs"/>
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/settings"
+            android:tint="?android:textColorPrimaryInverse" />
 
 
     </LinearLayout>

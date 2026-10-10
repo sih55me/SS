@@ -30,6 +30,22 @@
                 android:name="android.app.default_searchable"
                 android:value=".Result" />
         </activity>
+
+
+        <activity
+            android:name=".ProjectActivitySibling"
+            android:enableOnBackInvokedCallback="false"
+            android:supportsPictureInPicture="true"
+            android:allowEmbedded="true"
+            android:documentLaunchMode="intoExisting"
+            android:autoRemoveFromRecents="true"
+            android:launchMode="singleTop"
+            android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|keyboard"
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".Result" />
+        </activity>
         <activity
             android:name=".PP"
             android:icon="@mipmap/ic_launcher_pp"

@@ -22,9 +22,11 @@ import androidx.core.net.toUri
 import cakar.search.InfoProDialog
 import cakar.search.PP
 import cakar.search.ProjectActivity
+import cakar.search.ProjectActivitySibling
 import cakar.search.R
 import cakar.search.databinding.ItemBinding
 import cakar.search.filetype.Project
+import cakar.search.ste.Ngatur
 import coil3.asImage
 import coil3.load
 import coil3.request.crossfade
@@ -37,6 +39,8 @@ class Adapter(
     val data : ArrayList<Project>,
     var mini: Boolean = false
 ): BaseAdapter() {
+
+    val ng = Ngatur(activity)
 
     var a : ActionMode? = null
 
@@ -184,11 +188,20 @@ class Adapter(
             }
         )
         binding.root.setOnClickListener{
-            InfoProDialog().apply {
-                arguments = Bundle().also {
-                    it.putInt("id", itemdata.id)
+            if(ng.getBoolean("optnpp", false)){
+                val i = Intent(activity, ProjectActivitySibling::class.java)
+                i.putExtra("project", itemdata!!.id)
+                itemdata!!.uninfo.get("project_token")?.let {
+                    i.putExtra("tknp",it.toString())
                 }
-            }.show(activity.fragmentManager, "ipd")
+                activity.startActivity(i)
+            }else{
+                InfoProDialog().apply {
+                    arguments = Bundle().also {
+                        it.putInt("id", itemdata.id)
+                    }
+                }.show(activity.fragmentManager, "ipd")
+            }
         }
         binding.root.setOnLongClickListener{
             PopupMenu(activity, binding.title).also { p->

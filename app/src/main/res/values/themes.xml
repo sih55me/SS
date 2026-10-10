@@ -11,16 +11,14 @@
         <item name="android:actionModeStyle">@style/Widget.Notds.ActionMode</item>
         <item name="android:buttonCornerRadius" tools:targetApi="28">20dp</item>
         <item name="android:dialogTheme">@style/Theme.Notds.Dialog</item>
-        <item name="android:popupTheme">?android:popupMenuStyle</item>
-        <item name="android:popupMenuStyle">@style/Widget.Notds.PopupMenu</item>
-        <item name="android:contextPopupMenuStyle">@style/Widget.Notds.PopupMenu</item>
-        <item name="android:actionOverflowMenuStyle">@style/Widget.Notds.PopupMenu</item>
         <item name="android:windowBackground">@drawable/full_frame</item>
         <item name="android:alertDialogTheme">@style/Theme.Notds.Dialog</item>
         <item name="android:buttonStyle">@style/Widget.Notds.Button</item>
-        <item name="android:checkboxStyle">@style/Widget.Notds.Checkbox</item>
-        <item name="android:radioButtonStyle">@style/Widget.Notds.RadioButton</item>
+        <item name="android:actionModeWebSearchDrawable">@drawable/search</item>
+        <item name="android:searchHintIcon">@drawable/search</item>
+        <item name="android:searchViewStyle">@style/Widget.Notds.SearchView</item>
         <!--color-->
+        <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:colorBackground">@color/bg</item>
         <item name="android:colorButtonNormal">@color/colorBtn</item>
         <item name="android:colorSecondary">@color/black</item>
@@ -72,9 +70,6 @@
         <item name="android:actionOverflowMenuStyle">@style/Widget.Notds.PopupMenu</item>
         <item name="android:windowBackground">@drawable/dialog_frame</item>
         <item name="android:alertDialogTheme">@style/Theme.Notds.Dialog</item>
-        <item name="android:buttonStyle">@style/Widget.Notds.Button</item>
-        <item name="android:checkboxStyle">@style/Widget.Notds.Checkbox</item>
-        <item name="android:radioButtonStyle">@style/Widget.Notds.RadioButton</item>
         <!--color-->
         <item name="android:colorBackground">@color/bg</item>
         <item name="android:colorButtonNormal">@color/colorBtn</item>
@@ -88,8 +83,7 @@
         <item name="android:buttonBarNeutralButtonStyle">@style/Widget.Notds.ButtonDialog.No</item>
         <item name="android:buttonCornerRadius" tools:targetApi="28">20dp</item>
         <item name="android:windowTitleStyle">@android:style/TextAppearance.Material.Large</item>
-        <item name="android:windowMinWidthMajor">90dp</item>
-        <item name="android:windowMinWidthMinor">30dp</item>
+
 
     </style>
 

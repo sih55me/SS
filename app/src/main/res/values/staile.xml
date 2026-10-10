@@ -30,6 +30,15 @@
         <item name="android:padding">0dp</item>
         <item name="android:layout_marginRight">20dp</item>
     </style>
+
+    <style name="Widget.Notds.SearchView" parent="android:Widget.Material.SearchView">
+        <item name="android:closeIcon">@drawable/close</item>
+        <item name="android:searchHintIcon">@drawable/search</item>
+        <item name="android:searchIcon">@drawable/search</item>
+        <item name="android:commitIcon">@drawable/check</item>
+        <item name="android:goIcon">@drawable/tab_new_right</item>
+    </style>
+s
     <style name="Widget.Notds.ActionButton.Overflow" parent="android:Widget.Material.ActionButton.Overflow">
         <item name="android:paddingLeft">0dp</item>
         <item name="android:paddingRight">00dp</item>
