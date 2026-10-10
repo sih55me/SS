@@ -25,6 +25,11 @@ public class Ngatur {
     }
 
 
+    public SharedPreferences.Editor edit(){
+        return mahaSetel.edit();
+    }
+
+
 
     public boolean kill(){
         konteks = null;
